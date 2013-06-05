@@ -1,19 +1,20 @@
 ##Instruction##
-#1. Create a folder with the name of the experiment
-#2. In the experiment folder, place all zip files collected
-#from CatScan into a subfolder named "zip"
-#3. Create another empty subfolder folder named "matrices"
-#4. Change the PATH & SCENARIO NAME at the beginning of the script
-#4. Run the entire script
+#1. Create a folder with the name of the experiment;
+#2. In the experiment folder, create three subfolder named "zip", "matrices", 
+#and "ism" respectively;
+#3. Change the PATH & SCENARIO NAME at the beginning of the script;
+#4. Run the entire script;
 #5. To create dendrograms at different solutions, manually change the number in the last line of the script.
 #6. Go find the result in the experiment folder
 
 
 rm(list=ls())
-path <- "D:/Desktop/planes_sideview/"
+path <- "D:/Desktop/planes_sideview"
 scenario_name <- "Planes Sideview"
 
-
+if(substr(path, nchar(path), nchar(path)) != "/"){
+  path <- paste(path, "/", sep = "")
+}
 
 
 
