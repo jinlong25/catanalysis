@@ -21,9 +21,9 @@ if(substr(path, nchar(path), nchar(path)) != "/"){
 #install.packages("gplots")
 library("gplots")
 #install.packages("vegan")
-library(vegan)
+library("vegan")
 #install.packages("Rcmdr")
-#library(Rcmdr)
+#library("Rcmdr")
 
 ############DATA PROCESSING FUNCTIONS###############################
 
