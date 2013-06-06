@@ -11,6 +11,8 @@
 rm(list=ls())
 path <- "D:/Desktop/planes_sideview"
 scenario_name <- "Planes Sideview"
+#Define the max number of clusters
+max_cluster <- 8
 
 if(substr(path, nchar(path), nchar(path)) != "/"){
   path <- paste(path, "/", sep = "")
@@ -470,4 +472,6 @@ description_getter(path)
 participant_similarity(path)
 
 ###Change the number here to create colored-dendrograms at different solutions
-cluster_analysis(path, 8, scenario_name)
+for(i in 2: max_cluster){
+  cluster_analysis(path, i, scenario_name)
+}
