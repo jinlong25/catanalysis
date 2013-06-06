@@ -1,10 +1,12 @@
-##Housing clearing
-rm(list=ls())
+##Instruction
+##1. Run CatAnalysis.R;
+##2. Set nr and nc (nr * nc = total number of participants) (Improve later..);
+##3. Run the script;
 
-##Set path and layout of the output figure (nr * nc >= total number of participants)
-path <- "D:/Desktop/planes_sideview/"
+##Set the layout of the output figure (nr * nc >= total number of participants)
 nr <- 4
 nc <- 5
+
 
 ##Install and load package(s)
 #install.packages("Cairo")
