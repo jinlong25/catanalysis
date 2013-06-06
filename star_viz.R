@@ -22,7 +22,6 @@ Cairo(file = paste(path, "star_viz_all.png", sep = ""), type = "png", units = "p
 par(mfrow = c(nr, nc))
 
 for(p in files){
-  p <- files[9]
   participant <- unzip(paste(zip_path, p, sep=""))
   check <- participant[6]
   if(substr(check, nchar(check) - 13, nchar(check)) != "assignment.csv"){

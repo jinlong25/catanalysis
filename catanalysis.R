@@ -470,4 +470,4 @@ description_getter(path)
 participant_similarity(path)
 
 ###Change the number here to create colored-dendrograms at different solutions
-cluster_analysis(path, 2, scenario_name)
+cluster_analysis(path, 8, scenario_name)
