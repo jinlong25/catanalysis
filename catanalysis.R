@@ -9,10 +9,11 @@
 
 
 rm(list=ls())
-path <- "D:/Desktop/planes_sideview"
+path <- "D:/Desktop/sideview"
 scenario_name <- "Planes Sideview"
-#Define the max number of clusters
+##Define the max number of clusters
 max_cluster <- 8
+
 
 if(substr(path, nchar(path), nchar(path)) != "/"){
   path <- paste(path, "/", sep = "")
@@ -412,42 +413,38 @@ overview_getter <- function(path){
 
 ##Participant similarity analysis
 participant_similarity <- function(path){
-files <- list.files(paste(path, "ism/", sep = ""))
+  isms <- list.files(paste(path, "ism/", sep = ""))
+  all_isms <- list()
 
-participants <- c()
-
-for (i in 1:length(files)){
-  ism <- read.delim(paste(paste(path, "ism/", sep = ""),files[i],sep=""),header=FALSE, sep=" ",stringsAsFactors=F)
-  ism <- data.matrix(ism[1:n_icons,])
-  #assign(paste("p",i,sep=""),ism)
-  participants <- append(participants,sum(ism))
-}
-
-
-
-dm <- matrix(0, ncol = np, nrow = np)
-for (i in 1:np){
-  for (j in 1:np){
-    dm[i,j] <- abs(participants[i]-participants[j])
+  participants <- c()
+  for (i in 1:length(isms)){
+    aism <- read.delim(paste(paste(path, "ism/", sep = ""),isms[i],sep=""),header=FALSE, sep=" ",stringsAsFactors=F)
+    #assign(paste("p",i,sep=""),ism)
+    all_isms <- c(all_isms, list(aism))
   }
-}
+  
+  dm <- matrix(0, ncol = np, nrow = np)
+  for (i in 1:np){
+    for (j in 1:np){
+      dm[i,j] <- sum(abs(all_isms[[i]] - all_isms[[j]]))
+    }
+  }
+  
+  names <- c()
+  for (i in 1:length(isms)){
+    name <- isms[i]
+    names <- append(names, substr(name, 12, nchar(name) - 5))
+  }
+  
+  colnames(dm) <- names
+  rownames(dm) <- names
+  
+  cluster <- hclust(method = "ward", as.dist(dm))
+  dend <- as.dendrogram(cluster)
 
-names <- c()
-for (i in 1:length(files)){
-  name <- files[i]
-  names <- append(names, substr(name, 12, nchar(name) - 5))
-}
-
-colnames(dm) <- names
-rownames(dm) <- names
-
-
-cluster = hclust(method = "ward", as.dist(dm))
-dend <- as.dendrogram(cluster)
-
-tiff(filename = paste(path, "participant_simiarlity.tiff", sep=""),width = 2000,height=2000,units="px",pointsize=5,compression="none",bg="white",res=600)
-plot(dend)
-dev.off()
+  tiff(filename = paste(path, "participant_simiarlity.tiff", sep=""),width = 2000,height=2000,units="px",pointsize=5,compression="none",bg="white",res=600)
+  plot(dend)
+  dev.off()
 }
 
 #exe
