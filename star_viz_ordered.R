@@ -1,7 +1,7 @@
 
 
 ##Set path and layout of the output figure (nr * nc >= total number of participants)
-participant_cluster <- 4
+participant_cluster <- 3
 nr <- 5
 nc <- 6
 
@@ -25,8 +25,6 @@ for (i in 1:length(isms)){
   #assign(paste("p",i,sep=""),ism)
   all_isms <- c(all_isms, list(aism))
 }
-
-
 
 dm <- matrix(0, ncol = np, nrow = np)
 for (i in 1:np){
@@ -112,7 +110,7 @@ for(d in ordered_container){
   for(i in 1:nrow(d)){
     x <- -5*sin(degrees.to.radians(5*d[i, 4]))
     y <- 5*cos(degrees.to.radians(5*d[i, 4]))
-    segments(0, 0, x, y, col = colors[d[i,2]+1])
+    segments(0, 0, x, y, col = colors[d[i,2]+1], lwd = 1.5)
     background_colors <- c("red", "black", "yellow", "blue", "pink", "green", "brown", "grey", "violet")
     background_color <- d[1, 5]
     segments(-5, -5, -5, 5, col = background_color, lwd = 2)
@@ -143,9 +141,9 @@ osm[ ,1] <- as.numeric(icon_order[,3])
 dm <- as.matrix(osm[,-1])
 dimnames(dm) <- list(osm[,1],osm[,1])
 
-ave <- hclust(method = "average", as.dist(20 - dm))
-comp <- hclust(method = "complete", as.dist(20 - dm))
-ward <- hclust(method = "ward", as.dist(20 - dm))
+ave <- hclust(method = "average", as.dist(np - dm))
+comp <- hclust(method = "complete", as.dist(np - dm))
+ward <- hclust(method = "ward", as.dist(np - dm))
 
 
 
@@ -177,7 +175,7 @@ for(k in 2:8){
   for(i in 1:nrow(dend_ave)){
     x <- -5*sin(degrees.to.radians(5*dend_ave[i, 2]))
     y <- 5*cos(degrees.to.radians(5*dend_ave[i, 2]))
-    segments(0, 0, x, y, col = colors[dend_ave[i,1]])
+    segments(0, 0, x, y, col = colors[dend_ave[i,1]], lwd = 2.5)
   }
   
   dend_comp <- as.data.frame(cutree(comp, k))
@@ -191,7 +189,7 @@ for(k in 2:8){
   for(i in 1:nrow(dend_comp)){
     x <- -5*sin(degrees.to.radians(5*dend_comp[i, 2]))
     y <- 5*cos(degrees.to.radians(5*dend_comp[i, 2]))
-    segments(0, 0, x, y, col = colors[dend_comp[i,1]])
+    segments(0, 0, x, y, col = colors[dend_comp[i,1]], lwd = 2.5)
   }
   
   
@@ -206,7 +204,7 @@ for(k in 2:8){
   for(i in 1:nrow(dend_ward)){
     x <- -5*sin(degrees.to.radians(5*dend_ward[i, 2]))
     y <- 5*cos(degrees.to.radians(5*dend_ward[i, 2]))
-    segments(0, 0, x, y, col = colors[dend_ward[i,1]])
+    segments(0, 0, x, y, col = colors[dend_ward[i,1]], lwd = 2.5)
   }
 }
 
