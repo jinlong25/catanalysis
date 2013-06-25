@@ -15,7 +15,7 @@ library("RColorBrewer")
 zip_path <- paste(path, "zip/", sep="")
 files <- list.files(zip_path)
 
-
+#Participant Similarity Analysis
 isms <- list.files(paste(path, "ism/", sep = ""))
 all_isms <- list()
 
@@ -47,6 +47,8 @@ dend <- as.dendrogram(cluster)
 group_membership <- cutree(cluster, participant_cluster)
 group_membership <- as.data.frame(group_membership)
 
+
+#Reordering participants based on participant similarity analysis (psa)
 overall_container <- list()
 
 for(p in files){
