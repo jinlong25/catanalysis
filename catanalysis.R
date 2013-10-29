@@ -1,11 +1,14 @@
+##Jinlong's test editing
+
+
 ##Instruction##
-#1. Create a folder with the name of the experiment;
-#2. In the experiment folder, create three subfolder named "zip", "matrices", 
-#and "ism" respectively;
-#3. Change the PATH & SCENARIO NAME at the beginning of the script;
-#4. Run the entire script;
-#5. To create dendrograms at different solutions, manually change the number in the last line of the script.
-#6. Go find the result in the experiment folder
+##1. Create a folder with the name of the experiment;
+##2. In the experiment folder, create three subfolder named "zip", "matrices", 
+##and "ism" respectively;
+##3. Change the PATH & SCENARIO NAME at the beginning of the script;
+##4. Run the entire script;
+##5. To create dendrograms at different solutions, manually change the number in the last line of the script.
+##6. Go find the result in the experiment folder
 
 
 rm(list=ls())
