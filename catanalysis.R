@@ -7,6 +7,8 @@
 #5. To create dendrograms at different solutions, manually change the number in the last line of the script.
 #6. Go find the result in the experiment folder
 
+#This is a test
+
 
 rm(list=ls())
 path <- "D:/Desktop/sideview"
