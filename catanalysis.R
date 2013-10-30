@@ -7,12 +7,11 @@
 #5. To create dendrograms at different solutions, manually change the number in the last line of the script.
 #6. Go find the result in the experiment folder
 
-#This is a test
-
 
 rm(list=ls())
-path <- "D:/Desktop/sideview"
-scenario_name <- "Planes Sideview"
+
+path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2100 mturk landscape test"
+scenario_name <- "landscapes test"
 ##Define the max number of clusters
 max_cluster <- 8
 
@@ -28,7 +27,7 @@ library("gplots")
 #install.packages("vegan")
 library("vegan")
 #install.packages("Rcmdr")
-#library("Rcmdr")
+library("Rcmdr")
 
 ############DATA PROCESSING FUNCTIONS###############################
 
@@ -170,7 +169,9 @@ participant_info <- function(path){
   write.table(demographic, file=paste(path, "participant.csv", sep=""), sep=",", row.names=F,  col.names = F)
 }
   
-
+# This function extracts the descriptions that participants have created after
+# the grouping task. Both short labels and long descriptions are extracted and stored
+# ??in the same files?? ??in different files??
 description_getter <- function(path){
   zip_path <- paste(path, "zip/", sep="")
   files <- list.files(zip_path)
@@ -200,12 +201,14 @@ description_getter <- function(path){
   
 
 
-#Heatmap
+# This function generates a heatmap based on the OSM.
+# No dendrograms are generated and the icons are in alphabetical order
 heat_map <- function(path){
   d = read.csv(paste(path,"osm.csv",sep=""),header=FALSE)
   dm = as.matrix(d[,-1])
   dimnames(dm) = list(d[,1],d[,1])
   
+  # The export of the heatmap is realized as a tiff file. Other options are ....??
   tiff(filename = paste(path, "heat_map.tiff", sep=""),width = 2000,height=2000,units="px",pointsize=5,compression="none",bg="white",res=600)
   heatmap.2(as.matrix(participant_counter(path)-dm),Rowv=FALSE, Colv="Rowv",dendrogram="none",margin = c(3,3),cexRow =0.6,cexCol=0.6,revC=F,trace="none",key=F)
   dev.off()
