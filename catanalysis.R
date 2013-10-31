@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ##Jinlong's test editing
 
 
@@ -9,11 +10,22 @@
 ##4. Run the entire script;
 ##5. To create dendrograms at different solutions, manually change the number in the last line of the script.
 ##6. Go find the result in the experiment folder
+=======
+###Instruction##
+#1. Create a folder with the name of the experiment;
+#2. In the experiment folder, create three subfolder named "zip", "matrices", 
+#and "ism" respectively;
+#3. Change the PATH & SCENARIO NAME at the beginning of the script;
+#4. Run the entire script;
+#5. To create dendrograms at different solutions, manually change the number in the last line of the script.
+#6. Go find the result in the experiment folder
+>>>>>>> 4255fbe0ebb97472d530da3c1826b47405201363
 
 
 rm(list=ls())
-path <- "D:/Desktop/sideview"
-scenario_name <- "Planes Sideview"
+
+path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2100 mturk landscape test"
+scenario_name <- "landscapes test"
 ##Define the max number of clusters
 max_cluster <- 8
 
@@ -29,7 +41,7 @@ library("gplots")
 #install.packages("vegan")
 library("vegan")
 #install.packages("Rcmdr")
-#library("Rcmdr")
+library("Rcmdr")
 
 ############DATA PROCESSING FUNCTIONS###############################
 
@@ -54,6 +66,7 @@ icon_list_getter <- function(path){
 ######################FIX LATER!!###################################
     icon_list[i] <- substr(icon_list[i],13,nchar(icon_list[i])-4)
   }
+  # Why is this necessary?
   icon_list = sort(icon_list)
   return(icon_list)
 }
@@ -171,7 +184,9 @@ participant_info <- function(path){
   write.table(demographic, file=paste(path, "participant.csv", sep=""), sep=",", row.names=F,  col.names = F)
 }
   
-
+# This function extracts the descriptions that participants have created after
+# the grouping task. Both short labels and long descriptions are extracted and stored
+# ??in the same files?? ??in different files??
 description_getter <- function(path){
   zip_path <- paste(path, "zip/", sep="")
   files <- list.files(zip_path)
@@ -201,12 +216,14 @@ description_getter <- function(path){
   
 
 
-#Heatmap
+# This function generates a heatmap based on the OSM.
+# No dendrograms are generated and the icons are in alphabetical order
 heat_map <- function(path){
   d = read.csv(paste(path,"osm.csv",sep=""),header=FALSE)
   dm = as.matrix(d[,-1])
   dimnames(dm) = list(d[,1],d[,1])
   
+  # The export of the heatmap is realized as a tiff file. Other options are ....??
   tiff(filename = paste(path, "heat_map.tiff", sep=""),width = 2000,height=2000,units="px",pointsize=5,compression="none",bg="white",res=600)
   heatmap.2(as.matrix(participant_counter(path)-dm),Rowv=FALSE, Colv="Rowv",dendrogram="none",margin = c(3,3),cexRow =0.6,cexCol=0.6,revC=F,trace="none",key=F)
   dev.off()
@@ -230,14 +247,16 @@ heat_map_w_dend <- function(path){
 #Cluster analysis
 cluster_analysis <- function(path, k, title=""){
   d = read.csv(paste(path,"osm.csv",sep=""),header=FALSE)
-  dm = as.matrix(d[,-1])
-  dimnames(dm) = list(d[,1],d[,1])
+  # old code: dm = as.matrix(d[,-1])
+  #  dimnames(dm) = list(d[,1],d[,1])
+  dm = as.matrix(d)
   
   ave = hclust(method = "average", as.dist(participant_counter(path)-dm))
   comp = hclust(method = "complete", as.dist(participant_counter(path)-dm))
   ward = hclust(method = "ward", as.dist(participant_counter(path)-dm))
   
   # load code of A2R function
+  # Explain what this function is doing!
   source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
   
   pre_colors <- c("firebrick2","dodgerblue4","indianred1","darkgreen","darkorange2",
@@ -390,8 +409,26 @@ overview_getter <- function(path){
   title(paste("Total participants: ", np ,";",sep=""),line=-18, cex=20)
   title(paste("Male: ",male, ", Female: ", female, sep=""),line=-20, cex=20)
   title(paste("Average age: ", aveage, " (max: ", max, ", min: ", min, ")", sep=""),line=-22,cex=20)
-  boxplot(data[,14],horizontal=T, main = "Groups Created")
-  boxplot(data[,15],horizontal=T, main = "Grouping Time")
+  boxplot(data[,14],
+          horizontal=TRUE, 
+          notch = TRUE,  # Notches for CI for median
+          col = "slategray3",
+          boxwex = 0.5,  # Width of box as proportion of original
+          whisklty = 1,  # Whisker line type; 1 = solid line
+          staplelty = 0,  # Staple (line at end) type; 0 = none
+          outpch = 16,  # Symbols for outliers; 16 = filled circle
+          outcol = "slategray3",  # Color for outliers
+          main = "Groups Created")
+  boxplot(data[,15],
+          horizontal=TRUE, 
+          notch = TRUE,  # Notches for CI for median
+          col = "slategray3",
+          boxwex = 0.5,  # Width of box as proportion of original
+          whisklty = 1,  # Whisker line type; 1 = solid line
+          staplelty = 0,  # Staple (line at end) type; 0 = none
+          outpch = 16,  # Symbols for outliers; 16 = filled circle
+          outcol = "slategray3",  # Color for outliers
+          main = "Grouping Time")
   
   groupscount=data.frame(table(data[,14]))
   
