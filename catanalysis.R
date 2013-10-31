@@ -52,6 +52,7 @@ icon_list_getter <- function(path){
 ######################FIX LATER!!###################################
     icon_list[i] <- substr(icon_list[i],13,nchar(icon_list[i])-4)
   }
+  # Why is this necessary?
   icon_list = sort(icon_list)
   return(icon_list)
 }
@@ -232,14 +233,16 @@ heat_map_w_dend <- function(path){
 #Cluster analysis
 cluster_analysis <- function(path, k, title=""){
   d = read.csv(paste(path,"osm.csv",sep=""),header=FALSE)
-  dm = as.matrix(d[,-1])
-  dimnames(dm) = list(d[,1],d[,1])
+  # old code: dm = as.matrix(d[,-1])
+  #  dimnames(dm) = list(d[,1],d[,1])
+  dm = as.matrix(d)
   
   ave = hclust(method = "average", as.dist(participant_counter(path)-dm))
   comp = hclust(method = "complete", as.dist(participant_counter(path)-dm))
   ward = hclust(method = "ward", as.dist(participant_counter(path)-dm))
   
   # load code of A2R function
+  # Explain what this function is doing!
   source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
   
   pre_colors <- c("firebrick2","dodgerblue4","indianred1","darkgreen","darkorange2",
