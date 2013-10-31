@@ -1,17 +1,4 @@
-<<<<<<< HEAD
-##Jinlong's test editing
-
-
-##Instruction##
-##1. Create a folder with the name of the experiment;
-##2. In the experiment folder, create three subfolder named "zip", "matrices", 
-##and "ism" respectively;
-##3. Change the PATH & SCENARIO NAME at the beginning of the script;
-##4. Run the entire script;
-##5. To create dendrograms at different solutions, manually change the number in the last line of the script.
-##6. Go find the result in the experiment folder
-=======
-###Instruction##
+#Instruction#
 #1. Create a folder with the name of the experiment;
 #2. In the experiment folder, create three subfolder named "zip", "matrices", 
 #and "ism" respectively;
@@ -19,33 +6,30 @@
 #4. Run the entire script;
 #5. To create dendrograms at different solutions, manually change the number in the last line of the script.
 #6. Go find the result in the experiment folder
->>>>>>> 4255fbe0ebb97472d530da3c1826b47405201363
 
 
+#Clear the workspace
 rm(list=ls())
 
+#Define the path to the experiment folder (with a closing "/" or "\")
+#Note that the path delimiter in Windows is "\" while the path delimiter in Mac in "/"
 path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2100 mturk landscape test"
+#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/"
+
+#Define the name of the experiment
 scenario_name <- "landscapes test"
-##Define the max number of clusters
+
+#Define the max number of clusters
 max_cluster <- 8
 
-
-if(substr(path, nchar(path), nchar(path)) != "/"){
-  path <- paste(path, "/", sep = "")
-}
-
-
-
+#Uncomment the install.package() functions if you haven't installed these packages
 #install.packages("gplots")
 library("gplots")
 #install.packages("vegan")
 library("vegan")
-#install.packages("Rcmdr")
-library("Rcmdr")
 
-############DATA PROCESSING FUNCTIONS###############################
-
-##########Icon Counter##########
+#############DATA PROCESSING FUNCTIONS###############################
+#Icon Counter: count the number of icons(items) used in the experiment
 icon_counter <- function(path){
   zip_path <- paste(path, "zip/", sep="")
   files <- list.files(zip_path)
@@ -55,7 +39,7 @@ icon_counter <- function(path){
   return(n_icons)
 }
 
-##########Icon List Getter######
+#Icon List Getter: get a list of icon names
 icon_list_getter <- function(path){
   zip_path <- paste(path, "zip/", sep="")
   files <- list.files(zip_path)
@@ -63,15 +47,18 @@ icon_list_getter <- function(path){
   icons <- read.csv(first_p[7],header=F,stringsAsFactors=F)
   icon_list <- icons[,2]
   for(i in 1:length(icon_list)){
-######################FIX LATER!!###################################
-    icon_list[i] <- substr(icon_list[i],13,nchar(icon_list[i])-4)
+    end <- regexpr("\\.[^\\.]*$", icon_list[i])[1]
+    icon_list[i] <- substr(icon_list[i],9,end-1)
   }
   # Why is this necessary?
+  #Jinlong: The old script can only handle icon files with a three-character extension such as gif, jpg, bmp, png.
+  #It is okay so far but I rewrote it using regular expression to auto-locate the extension and then extract the 
+  #icon name (without the path or the extension), so it will also work with tiff or jpeg files
   icon_list = sort(icon_list)
   return(icon_list)
 }
 
-######Participant Counter#######
+#Participant Counte: count the number of participants
 participant_counter <- function(path){
   zip_path <- paste(path, "zip/", sep="")
   files <- list.files(zip_path)
@@ -80,37 +67,35 @@ participant_counter <- function(path){
 }
 
 
-#####OSM and ISM Generator#####
-
-#Set the path for experiment folder
+#OSM and ISM Generator: extract all individual similarity matrices (ISMs) and generate the overall similarity matrix(OSM) by summing up all ISMs
 osm_ism_generator <- function(path){
-  #Creat path for zips
   zip_path <- paste(path, "zip/", sep="")
   files <- list.files(zip_path)
   
-  #Initialize osm with the first individual similarity matrice
+  #Initialize osm with the first ISM
   participant1 <- unzip(paste(zip_path,files[1],sep=""))
-  matrix1 <- read.delim(participant1[2],header=FALSE, sep=" ",stringsAsFactors=F)
+  matrix1 <- read.delim(sort(participant1)[2],header=FALSE, sep=" ",stringsAsFactors=F)
   matrix1 <- data.matrix(matrix1[1:icon_counter(path),])
   
-  #Export the first matrix
+  #Export the first ISM
   write.table(matrix1,file=paste(path, "ism/", "participant", substr(files[1], 1, nchar(files[1])-4),  ".mtrx",sep=""), sep=" ", row.names=F, col.names = F)
   write.table(matrix1,file=paste(path, "matrices/", "participant", substr(files[1], 1, nchar(files[1])-4),  ".mtrx",sep=""), sep=" ", row.names=F, col.names = F)
-  #Add all ism to osm and export each individual ism
+  
+  #Summing up all ISMs for OSM and export each ISM
   osm <- matrix1
   for(i in 2:length(files)){
     participant_i <- unzip(paste(zip_path,files[i],sep=""))
-    matrix_i <- read.delim(participant_i[2],header=FALSE, sep=" ",stringsAsFactors=F)
+    matrix_i <- read.delim(sort(participant_i)[2],header=FALSE, sep=" ",stringsAsFactors=F)
     matrix_i <- data.matrix(matrix_i[1:icon_counter(path),])
     write.table(matrix_i,file=paste(path, "ism/", "participant", substr(files[i], 1, nchar(files[1])-4),  ".mtrx",sep=""), sep=" ", row.names=F, col.names = F)
     write.table(matrix_i,file=paste(path, "matrices/", "participant", substr(files[i], 1, nchar(files[i])-4),  ".mtrx",sep=""), sep=" ", row.names=F, col.names = F)
     osm <- osm + matrix_i
   }
   
-  #Uncomment this line if export data for KlipArt
+  #Export OSM
+  #Uncomment the line below if export data for KlipArt
   write.table(osm, file=paste(path, "matrices/", "total.mtrx", sep=""), sep=" ", row.names=F,  col.names = F)
-  ##Icon naming convention matters here!!!
-  osm <- cbind(sort(as.numeric(icon_list_getter(path))), osm)
+  osm <- cbind(icon_list_getter(path), osm)
   write.table(osm, file=paste(path, "osm.csv", sep=""), sep=",", row.names=F,  col.names = F)
 }
 
