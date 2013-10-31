@@ -392,8 +392,26 @@ overview_getter <- function(path){
   title(paste("Total participants: ", np ,";",sep=""),line=-18, cex=20)
   title(paste("Male: ",male, ", Female: ", female, sep=""),line=-20, cex=20)
   title(paste("Average age: ", aveage, " (max: ", max, ", min: ", min, ")", sep=""),line=-22,cex=20)
-  boxplot(data[,14],horizontal=T, main = "Groups Created")
-  boxplot(data[,15],horizontal=T, main = "Grouping Time")
+  boxplot(data[,14],
+          horizontal=TRUE, 
+          notch = TRUE,  # Notches for CI for median
+          col = "slategray3",
+          boxwex = 0.5,  # Width of box as proportion of original
+          whisklty = 1,  # Whisker line type; 1 = solid line
+          staplelty = 0,  # Staple (line at end) type; 0 = none
+          outpch = 16,  # Symbols for outliers; 16 = filled circle
+          outcol = "slategray3",  # Color for outliers
+          main = "Groups Created")
+  boxplot(data[,15],
+          horizontal=TRUE, 
+          notch = TRUE,  # Notches for CI for median
+          col = "slategray3",
+          boxwex = 0.5,  # Width of box as proportion of original
+          whisklty = 1,  # Whisker line type; 1 = solid line
+          staplelty = 0,  # Staple (line at end) type; 0 = none
+          outpch = 16,  # Symbols for outliers; 16 = filled circle
+          outcol = "slategray3",  # Color for outliers
+          main = "Grouping Time")
   
   groupscount=data.frame(table(data[,14]))
   
