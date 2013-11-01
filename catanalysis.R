@@ -191,6 +191,8 @@ description_getter <- function(path){
     description1[,4] <- paste(description1[,4], description1[,5], sep = ",")
     description1 <- description1[-5]
   }
+  
+  #Create dummy column names for the dataframe (will not be included when exported)
   colnames(description1) <- 1:4
   
   #Initialize a dataframe for all descriptions
@@ -198,12 +200,18 @@ description_getter <- function(path){
   
   #Read in the batch.csv for the rest of participants and extract the descriptions
   for(i in 2:length(files)){
+    
+    #Read in the zip files
     participant_i <- unzip(paste(zip_path,files[i],sep=""))
     description_i <- read.csv(sort(participant_i)[5],header=FALSE, stringsAsFactors=F)
+    
+    #Aggregate participants' long descriptions when they use comma in the descriptions.
     while(length(description_i) > 4){
       description_i[4] <- paste(description_i[,4], description_i[,5], sep = ",")
       description_i <- description_i[-5]
     }
+    
+    #Create dummy column names for the dataframe (will not be included when exported)
     colnames(description_i) <- 1:4
     
     #Combine descriptions from all participant into a dataframe (row-bind)
@@ -224,6 +232,7 @@ heat_map <- function(path){
   dimnames(dm) = list(d[,1],d[,1])
   
   # The export of the heatmap is realized as a tiff file. Other options are ....??
+  #Jinlong: other options includes jpg, bmp, png, etc. but each has its own function with slightly different arguments and different default values for arguments
   tiff(filename = paste(path, "heat_map.tiff", sep=""),width = 2000,height=2000,units="px",pointsize=5,compression="none",bg="white",res=600)
   heatmap.2(as.matrix(participant_counter(path)-dm),Rowv=FALSE, Colv="Rowv",dendrogram="none",margin = c(3,3),cexRow =0.6,cexCol=0.6,revC=F,trace="none",key=F)
   dev.off()
