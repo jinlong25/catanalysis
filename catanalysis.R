@@ -34,7 +34,7 @@ icon_counter <- function(path){
   zip_path <- paste(path, "zip/", sep="")
   files <- list.files(zip_path)
   first_p <- unzip(paste(zip_path,files[1],sep=""))
-  icons <- read.csv(first_p[7],header=F)
+  icons <- read.csv(sort(first_p[7]),header=F)
   n_icons <- nrow(icons)
   return(n_icons)
 }
@@ -44,7 +44,7 @@ icon_list_getter <- function(path){
   zip_path <- paste(path, "zip/", sep="")
   files <- list.files(zip_path)
   first_p <- unzip(paste(zip_path,files[1],sep=""))
-  icons <- read.csv(first_p[7],header=F,stringsAsFactors=F)
+  icons <- read.csv(sort(first_p[7]),header=F,stringsAsFactors=F)
   icon_list <- icons[,2]
   for(i in 1:length(icon_list)){
     end <- regexpr("\\.[^\\.]*$", icon_list[i])[1]
@@ -102,30 +102,33 @@ osm_ism_generator <- function(path){
 
 
 #################ANALYSIS FUNCTIONS##############################
-#Participant info
+#Participant info: collect demographic info and basic experiment info (# of groups created and time spent in seconds)
 participant_info <- function(path){
+  
+  #Read in the zip file
   zip_path <- paste(path, "zip/", sep="")
   files <- list.files(zip_path)
   
+  #Read in to demographic info for the 1st participant
   participant1 <- unzip(paste(zip_path,files[1],sep=""))
-  demo1 <- read.delim(participant1[4],header=FALSE, sep=",",stringsAsFactors=F)
+  ##temp solution for landscape experiment, for other experiment, change sort(participant1)[8] to sort(participant)[7]
+  demo1 <- read.delim(sort(participant1)[8],header=FALSE, sep=",",stringsAsFactors=F)
+  
+  #Aggregate eduction background for participant who use comma(s) in their eduction background (e.g., geography, education, business)
   while(length(demo1) > 13){
     demo1[7] <- paste(demo1[7], demo1[8], sep = ",")
     demo1 <- demo1[-8]
   }
   colnames(demo1) <- 1:13
-
+  
+  #Initialize the dataframe for demographic info
   demographic <- demo1
   
+  #Add demographic info from the rest of participants to the dataframe "demographic"
   for(i in 2:length(files)){
     participant_i <- unzip(paste(zip_path,files[i],sep=""))
-    
-    #Temp solution, fix later#
-  check <-  participant_i[4] 
-  if(substr(check, nchar(check) - 14, nchar(check)) != "participant.csv"){
-    check <- participant_i[7]
-  }
-    demo <- read.delim(check,header=FALSE, sep=",",stringsAsFactors=F)
+    ##temp solution for landscape experiment, for other experiment, change sort(participant1)[8] to sort(participant)[7]
+    demo <- read.delim(sort(participant1)[8],header=FALSE, sep=",",stringsAsFactors=F)
     while(length(demo) > 13){
       demo[7] <- paste(demo[7], demo[8], sep = ",")
       demo <- demo[-8]
@@ -134,68 +137,80 @@ participant_info <- function(path){
     demographic <- rbind(demographic, demo)
   }
   
+  #Create two vectors to store the # of groups created and time spent (in seconds)
   groups_created <- c()
   time_spent <- c()
   
   for(i in 1:length(files)){
+    #Read in the assignment.csv file
     participant_i <- unzip(paste(zip_path,files[i],sep=""))
-    #Temp solution
-    check <-  participant_i[6] 
-    if(substr(check, nchar(check) - 13, nchar(check)) != "assignment.csv"){
-      check <- participant_i[4]
-    }
-    groups <- read.delim(check, header=FALSE, sep=",",stringsAsFactors=F)
+    groups <- read.delim(sort(participant1)[4], header=FALSE, sep=",",stringsAsFactors=F)
+    
+    #Get the maxim group index and convert it to the # of groups created
     groups <- groups[nrow(groups),2]+1
+    
+    #Append the # of groups created to the vector "groups_created"
     groups_created <- append(groups_created, groups)
   }
   
   
   for(i in 1:length(files)){
+    #Read in the log file
     participant_i <- unzip(paste(zip_path,files[i],sep=""))
-    #Temp solution
-    check <-  participant_i[6] 
-    if(substr(check, nchar(check) - 15, nchar(check)) != "assignment.csv"){
-      check <- participant_i[4]
-    }
-    log <- read.delim(participant_i[3],header=FALSE, sep=",",stringsAsFactors=F)
+    log <- read.delim(sort(participant_i[1]),header=FALSE, sep=",",stringsAsFactors=F)
+    
+    #Get the time spent
     time <- log[nrow(log),]
     time <- substr(time, 33,nchar(time))
+    
+    #Append the time spent to the vector "time_spent"
     time_spent <- append(time_spent, time)
   }
   
+  #Append two vectors (i.e., two columns) - groups_created and time_spent to the demographic dataframe
   demographic <- cbind(demographic, groups_created)
   demographic <- cbind(demographic, time_spent)
   
+  #Export the demographic dataframe as a csv file
   write.table(demographic, file=paste(path, "participant.csv", sep=""), sep=",", row.names=F,  col.names = F)
 }
   
-# This function extracts the descriptions that participants have created after
-# the grouping task. Both short labels and long descriptions are extracted and stored
-# ??in the same files?? ??in different files??
+#description_getter: extract the linguistic labels (both long and short) from all participants and store in a single csv file
 description_getter <- function(path){
+  
+  #Read in the zip file
   zip_path <- paste(path, "zip/", sep="")
   files <- list.files(zip_path)
   
+  #Read in the batch.csv file from the 1st participant
   participant1 <- unzip(paste(zip_path,files[1],sep=""))
-  description1 <- read.csv(participant1[5],header=FALSE, stringsAsFactors=F)
+  description1 <- read.csv(sort(participant1[5]),header=FALSE, stringsAsFactors=F)
+  
+  #Aggregate participants' long descriptions when they use comma in the descriptions.
   while(length(description1) > 4){
     description1[,4] <- paste(description1[,4], description1[,5], sep = ",")
     description1 <- description1[-5]
   }
   colnames(description1) <- 1:4
   
+  #Initialize a dataframe for all descriptions
   description <- description1
   
+  #Read in the batch.csv for the rest of participants and extract the descriptions
   for(i in 2:length(files)){
     participant_i <- unzip(paste(zip_path,files[i],sep=""))
-    description_i <- read.csv(participant_i[5],header=FALSE, stringsAsFactors=F)
+    description_i <- read.csv(sort(participant_i)[5],header=FALSE, stringsAsFactors=F)
     while(length(description_i) > 4){
       description_i[4] <- paste(description_i[,4], description_i[,5], sep = ",")
       description_i <- description_i[-5]
     }
     colnames(description_i) <- 1:4
+    
+    #Combine descriptions from all participant into a dataframe (row-bind)
     description <- rbind(description, description_i)
   }
+  
+  #Export the description dataframe as a csv file
   write.table(description, file=paste(path, "description.csv", sep=""), sep=",", row.names=F,  col.names = F)
 }
   
@@ -334,33 +349,6 @@ cluster_validation <- function(path, k, title=""){
   A2Rplot(ward2, k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 2 Ward's Method",sep=""))
   
   dev.off()
-}
-}
-
-
-#MDS
-if(F){
-###Define a list using Excel..
-mds_list <- read.csv(paste(path,"mds_list.csv", sep = ""), header=F)
-
-mds <- function(path, list){
-  d = read.csv(paste(path,"osm.csv",sep=""),header=FALSE)
-  dm = as.matrix(d[,-1])
-  dimnames(dm) = list(d[,1],d[,1])
-  
-  dm_dist <- dist(dm,method="euclidean")
-  mds <- cmdscale(dm_dist)
-  col <- c("firebrick2","dodgerblue4","darkgreen","chocolate4","darkorange2",
-           "darkmagenta","deeppink3","indianred1", "blueviolet", "black", "darkslategrey", "saddlebrown")
-  tiff(filename = paste(path, "mds.tiff", sep=""),width = 3, height =3, units = "in", pointsize=5, compression="none", bg = "white",res=600)
-  plot(min(mds[,1],mds[,2]):max(mds[,1],mds[,2]), min(mds[,1],mds[,2]):max(mds[,1],mds[,2]), type = "n", xlab="",ylab="", main="Multidimensional Scaling")
-  legend
-  for(i in 1:nrow(mds)){
-    points(mds[i,1],mds[i,2],pch=list[i,2], col=col[list[i,2]],type="p",cex=1.5)
-  }
-  ####FIX LATER!!!###########
-  legend("topright", col = col[1:3], legend = c("Group 1", "Group 2", "Group 3"), pch=c(1,2,3), title="Legend")
-  dev.off()  
 }
 }
 
