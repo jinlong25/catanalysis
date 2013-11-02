@@ -29,74 +29,135 @@ library("gplots")
 library("vegan")
 
 #############DATA PROCESSING FUNCTIONS###############################
-#Icon Counter: count the number of icons(items) used in the experiment
+#Icon counter: count the number of icons(items) used in the experiment
 icon_counter <- function(path){
-  zip_path <- paste(path, "zip/", sep="")
+  #Construct the zip folder path and list all the zip files
+  zip_path <- paste(path, "zip/", sep = "")
   files <- list.files(zip_path)
-  first_p <- unzip(paste(zip_path,files[1],sep=""))
-  icons <- read.csv(sort(first_p[7]),header=F)
+  
+  #Get the participant number for the first participant
+  first_p_number <- substring(files[1], 1, nchar(files[1]) - 4)
+  
+  #Unzip the file
+  first_p <- unzip(paste(zip_path, files[1], sep = ""))
+  
+  #Construct the full file name for icons.csv
+  icons_csv <- paste("./", first_p_number, "/", first_p_number, "icons.csv", sep = "")
+  
+  #Read in icons.csv
+  icons <- read.csv(icons_csv, header = F)
+  
+  #Get the number of icons used in the experiment
   n_icons <- nrow(icons)
+  
+  #Return the number of icons
   return(n_icons)
 }
 
-#Icon List Getter: get a list of icon names
+#Icon list getter: get a list of icon names
 icon_list_getter <- function(path){
-  zip_path <- paste(path, "zip/", sep="")
+  
+  #Construct the zip folder path and list all the zip files 
+  zip_path <- paste(path, "zip/", sep = "")
   files <- list.files(zip_path)
-  first_p <- unzip(paste(zip_path,files[1],sep=""))
-  icons <- read.csv(sort(first_p[7]),header=F,stringsAsFactors=F)
-  icon_list <- icons[,2]
+  
+  #Unzip the zip file from the 1st participant
+  first_p <- unzip(paste(zip_path, files[1], sep = ""))
+  
+  #Construct the full file name for icons.csv
+  icons_csv <- paste("./", first_p_number, "/", first_p_number, "icons.csv", sep = "")
+  
+  #Read in icons.csv
+  icons <- read.csv(icons_csv, header = F, stringsAsFactors = F)
+  
+  #Extract the icon names from the table (excluding the path name and file extensions)
+  icon_list <- icons[, 2]
   for(i in 1:length(icon_list)){
     end <- regexpr("\\.[^\\.]*$", icon_list[i])[1]
-    icon_list[i] <- substr(icon_list[i],9,end-1)
+    icon_list[i] <- substr(icon_list[i], 9, end - 1)
   }
   # Why is this necessary?
   #Jinlong: The old script can only handle icon files with a three-character extension such as gif, jpg, bmp, png.
   #It is okay so far but I rewrote it using regular expression to auto-locate the extension and then extract the 
   #icon name (without the path or the extension), so it will also work with tiff or jpeg files
+  
+  #Get and sort the icon names alphabetically in ascending order
   icon_list = sort(icon_list)
+  
+  #Return the icon list as a vector
   return(icon_list)
 }
 
-#Participant Counte: count the number of participants
+
+#Participant counter: count the number of participants
 participant_counter <- function(path){
-  zip_path <- paste(path, "zip/", sep="")
+  
+  #Construct the zip folder path and list all zip files
+  zip_path <- paste(path, "zip/", sep = "")
   files <- list.files(zip_path)
+  
+  #Get the total number of participants (zip files)
   np <- length(files)
+  
+  #Return the total number of participants as an integer
   return(np)
 }
 
 
 #OSM and ISM Generator: extract all individual similarity matrices (ISMs) and generate the overall similarity matrix(OSM) by summing up all ISMs
 osm_ism_generator <- function(path){
-  zip_path <- paste(path, "zip/", sep="")
+  #Construct the zip folder path and list all zip files
+  zip_path <- paste(path, "zip/", sep = "")
   files <- list.files(zip_path)
   
-  #Initialize osm with the first ISM
-  participant1 <- unzip(paste(zip_path,files[1],sep=""))
-  matrix1 <- read.delim(sort(participant1)[2],header=FALSE, sep=" ",stringsAsFactors=F)
-  matrix1 <- data.matrix(matrix1[1:icon_counter(path),])
+  #Initialize osm with the 1st ISM
+  participant1 <- unzip(paste(zip_path, files[1], sep = ""))
+  
+  #Get the participant number for the first participant
+  first_p_number <- substring(files[1], 1, nchar(files[1]) - 4)
+  
+  #Construct the full file name for ISM file (mtrx file)
+  first_ism <- paste("./", first_p_number, "/", first_p_number, ".mtrx", sep = "")
+  
+  #Read in the ISM from the 1st participant and exclude the non-ism info from the .mtrx file
+  first_matrix <- read.delim(first_ism, header = FALSE, sep = " ", stringsAsFactors = F)
+  first_matrix <- data.matrix(first_matrix[1:icon_counter(path), ])
   
   #Export the first ISM
-  write.table(matrix1,file=paste(path, "ism/", "participant", substr(files[1], 1, nchar(files[1])-4),  ".mtrx",sep=""), sep=" ", row.names=F, col.names = F)
-  write.table(matrix1,file=paste(path, "matrices/", "participant", substr(files[1], 1, nchar(files[1])-4),  ".mtrx",sep=""), sep=" ", row.names=F, col.names = F)
+  write.table(first_matrix,file = paste(path, "ism/", "participant", substr(files[1], 1, nchar(files[1]) - 4),  ".mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
+  write.table(first_matrix,file = paste(path, "matrices/", "participant", substr(files[1], 1, nchar(files[1]) - 4),  ".mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
   
   #Summing up all ISMs for OSM and export each ISM
-  osm <- matrix1
+  osm <- first_matrix
+  
+  #Process the ISMs of the rest of participants
   for(i in 2:length(files)){
-    participant_i <- unzip(paste(zip_path,files[i],sep=""))
-    matrix_i <- read.delim(sort(participant_i)[2],header=FALSE, sep=" ",stringsAsFactors=F)
-    matrix_i <- data.matrix(matrix_i[1:icon_counter(path),])
-    write.table(matrix_i,file=paste(path, "ism/", "participant", substr(files[i], 1, nchar(files[1])-4),  ".mtrx",sep=""), sep=" ", row.names=F, col.names = F)
-    write.table(matrix_i,file=paste(path, "matrices/", "participant", substr(files[i], 1, nchar(files[i])-4),  ".mtrx",sep=""), sep=" ", row.names=F, col.names = F)
+    #Unzip the participant's zip file
+    participant_i <- unzip(paste(zip_path, files[i], sep = ""))
+    
+    #Get the participant number
+    participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+    
+    #Construct the full file name for .mtrx file
+    matrix_i_name <- paste("./", participant_number, "/", participant_number, ".mtrx", sep = "")
+    
+    #Read in the ISM from a participant and exclude the non-ism info from the .mtrx file
+    matrix_i <- read.delim(matrix_i_name, header = F, sep = " ", stringsAsFactors = F)
+    matrix_i <- data.matrix(matrix_i[1:icon_counter(path), ])
+    
+    #Export the ISM as .mtrx for KlipArt and .csv for catanalysis
+    write.table(matrix_i, file = paste(path, "ism/", "participant", substr(files[i], 1, nchar(files[i) - 4),  ".mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
+    write.table(matrix_i, file = paste(path, "matrices/", "participant", substr(files[i], 1, nchar(files[i]) - 4),  ".mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
+    
+    #Add the ISM to OSM
     osm <- osm + matrix_i
   }
   
   #Export OSM
   #Uncomment the line below if export data for KlipArt
-  write.table(osm, file=paste(path, "matrices/", "total.mtrx", sep=""), sep=" ", row.names=F,  col.names = F)
+  write.table(osm, file = paste(path, "matrices/", "total.mtrx", sep = ""), sep = " ", row.names = F,  col.names = F)
   osm <- cbind(icon_list_getter(path), osm)
-  write.table(osm, file=paste(path, "osm.csv", sep=""), sep=",", row.names=F,  col.names = F)
+  write.table(osm, file = paste(path, "osm.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
 }
 
 
@@ -106,13 +167,20 @@ osm_ism_generator <- function(path){
 participant_info <- function(path){
   
   #Read in the zip file
-  zip_path <- paste(path, "zip/", sep="")
+  zip_path <- paste(path, "zip/", sep = "")
   files <- list.files(zip_path)
   
   #Read in to demographic info for the 1st participant
   participant1 <- unzip(paste(zip_path,files[1],sep=""))
-  ##temp solution for landscape experiment, for other experiment, change sort(participant1)[8] to sort(participant)[7]
-  demo1 <- read.delim(sort(participant1)[8],header=FALSE, sep=",",stringsAsFactors=F)
+  
+  #Get the participant number for the first participant
+  first_p_number <- substring(files[1], 1, nchar(files[1]) - 4)
+  
+  #Construct the full file name for the participant.csv file for the 1st participant
+  first_demo <- paste("./", first_p_number, "/", first_p_number, "participant.csv", sep = "")
+  
+  #Read in the participant.csv for the 1st participant
+  demo1 <- read.delim(first_demo, header = F, sep = ",",stringsAsFactors = F)
   
   #Aggregate eduction background for participant who use comma(s) in their eduction background (e.g., geography, education, business)
   while(length(demo1) > 13){
@@ -127,8 +195,15 @@ participant_info <- function(path){
   #Add demographic info from the rest of participants to the dataframe "demographic"
   for(i in 2:length(files)){
     participant_i <- unzip(paste(zip_path,files[i],sep=""))
-    ##temp solution for landscape experiment, for other experiment, change sort(participant1)[8] to sort(participant)[7]
-    demo <- read.delim(sort(participant1)[8],header=FALSE, sep=",",stringsAsFactors=F)
+    
+    #Get the participant number for the first participant
+    participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+    
+    #Construct the full file name for participant.csv file
+    participant_demo <- paste("./", participant_number, "/", participant_number, "participant.csv", sep = "")
+    
+    #Read in the participant.csv
+    demo <- read.delim(sparticipant_demo, header = F, sep = ",", stringsAsFactors = F)
     while(length(demo) > 13){
       demo[7] <- paste(demo[7], demo[8], sep = ",")
       demo <- demo[-8]
@@ -143,11 +218,18 @@ participant_info <- function(path){
   
   for(i in 1:length(files)){
     #Read in the assignment.csv file
-    participant_i <- unzip(paste(zip_path,files[i],sep=""))
-    groups <- read.delim(sort(participant1)[4], header=FALSE, sep=",",stringsAsFactors=F)
+    participant_i <- unzip(paste(zip_path, files[i], sep = ""))
+    
+    #Get the participant number for the first participant
+    participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+    
+    #Construct the full file name for assignment.csv file
+    participant_assignment <- paste("./", participant_number, "/", participant_number, "assignment.csv", sep = "")
+    
+    groups <- read.delim(participant_assignment, header = F, sep = ",", stringsAsFactors = F)
     
     #Get the maxim group index and convert it to the # of groups created
-    groups <- groups[nrow(groups),2]+1
+    groups <- groups[nrow(groups), 2] + 1
     
     #Append the # of groups created to the vector "groups_created"
     groups_created <- append(groups_created, groups)
@@ -157,11 +239,19 @@ participant_info <- function(path){
   for(i in 1:length(files)){
     #Read in the log file
     participant_i <- unzip(paste(zip_path,files[i],sep=""))
-    log <- read.delim(sort(participant_i[1]),header=FALSE, sep=",",stringsAsFactors=F)
+    
+    #Get the participant number for the first participant
+    participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+    
+    #Construct the full file name for .log file
+    participant_log <- paste("./", participant_number, "/", participant_number, ".log", sep = "")
+    
+    #Read in the log file
+    log <- read.delim(participant_log, header = F, sep=",", stringsAsFactors = F)
     
     #Get the time spent
-    time <- log[nrow(log),]
-    time <- substr(time, 33,nchar(time))
+    time <- log[nrow(log), ]
+    time <- substr(time, 33, nchar(time))
     
     #Append the time spent to the vector "time_spent"
     time_spent <- append(time_spent, time)
@@ -172,23 +262,30 @@ participant_info <- function(path){
   demographic <- cbind(demographic, time_spent)
   
   #Export the demographic dataframe as a csv file
-  write.table(demographic, file=paste(path, "participant.csv", sep=""), sep=",", row.names=F,  col.names = F)
+  write.table(demographic, file = paste(path, "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
 }
   
 #description_getter: extract the linguistic labels (both long and short) from all participants and store in a single csv file
 description_getter <- function(path){
   
-  #Read in the zip file
-  zip_path <- paste(path, "zip/", sep="")
+  #Construct the path for the zip folder and list all the zip files
+  zip_path <- paste(path, "zip/", sep = "")
   files <- list.files(zip_path)
   
-  #Read in the batch.csv file from the 1st participant
-  participant1 <- unzip(paste(zip_path,files[1],sep=""))
-  description1 <- read.csv(sort(participant1[5]),header=FALSE, stringsAsFactors=F)
+  #Unzip the zip file from the 1st participant
+  participant1 <- unzip(paste(zip_path, files[1], sep =" "))
+  
+  #Get the participant number for the first participant
+  participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+  
+  #Construct the full file name for the batch.csv file
+  batch <- paste("./", participant_number, "/", participant_number, "batch.csv", sep = "")
+  
+  description1 <- read.csv(batch), header = F, stringsAsFactors = F)
   
   #Aggregate participants' long descriptions when they use comma in the descriptions.
   while(length(description1) > 4){
-    description1[,4] <- paste(description1[,4], description1[,5], sep = ",")
+    description1[, 4] <- paste(description1[, 4], description1[,5], sep = ",")
     description1 <- description1[-5]
   }
   
@@ -202,12 +299,12 @@ description_getter <- function(path){
   for(i in 2:length(files)){
     
     #Read in the zip files
-    participant_i <- unzip(paste(zip_path,files[i],sep=""))
-    description_i <- read.csv(sort(participant_i)[5],header=FALSE, stringsAsFactors=F)
+    participant_i <- unzip(paste(zip_path, files[i], sep = ""))
+    description_i <- read.csv(sort(participant_i)[5],header = F, stringsAsFactors = F)
     
     #Aggregate participants' long descriptions when they use comma in the descriptions.
     while(length(description_i) > 4){
-      description_i[4] <- paste(description_i[,4], description_i[,5], sep = ",")
+      description_i[4] <- paste(description_i[, 4], description_i[, 5], sep = ",")
       description_i <- description_i[-5]
     }
     
@@ -219,7 +316,7 @@ description_getter <- function(path){
   }
   
   #Export the description dataframe as a csv file
-  write.table(description, file=paste(path, "description.csv", sep=""), sep=",", row.names=F,  col.names = F)
+  write.table(description, file = paste(path, "description.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
 }
   
 
