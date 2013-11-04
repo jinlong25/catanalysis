@@ -1,3 +1,4 @@
+
 #Instruction#
 #1. Create a folder with the name of the experiment;
 #2. In the experiment folder, create three subfolder named "zip", "matrices", 
@@ -146,7 +147,7 @@ osm_ism_generator <- function(path){
     matrix_i <- data.matrix(matrix_i[1:icon_counter(path), ])
     
     #Export the ISM as .mtrx for KlipArt and .csv for catanalysis
-    write.table(matrix_i, file = paste(path, "ism/", "participant", substr(files[i], 1, nchar(files[i) - 4),  ".mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
+    write.table(matrix_i, file = paste(path, "ism/", "participant", substr(files[i], 1, nchar(files[i]) - 4),  ".mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
     write.table(matrix_i, file = paste(path, "matrices/", "participant", substr(files[i], 1, nchar(files[i]) - 4),  ".mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
     
     #Add the ISM to OSM
@@ -351,7 +352,7 @@ heat_map_w_dend <- function(path){
 
 
 #Cluster analysis
-cluster_analysis <- function(path, k, title=""){
+cluster_analysis <- function(path, k, title = ""){
   d = read.csv(paste(path,"osm.csv",sep=""),header=FALSE)
   # old code: dm = as.matrix(d[,-1])
   #  dimnames(dm) = list(d[,1],d[,1])
@@ -365,8 +366,7 @@ cluster_analysis <- function(path, k, title=""){
   # Explain what this function is doing!
   source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
   
-  pre_colors <- c("firebrick2","dodgerblue4","indianred1","darkgreen","darkorange2",
-"darkmagenta","deeppink3","chocolate4", "blueviolet", "black", "darkslategrey", "saddlebrown")
+  pre_colors <- rainbow(k)
   colors <- pre_colors[1:k]
   
   
@@ -439,8 +439,7 @@ cluster_validation <- function(path, k, title=""){
   source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
   
   #Define colors
-  pre_colors <- c("firebrick2","dodgerblue4","indianred1","darkgreen","darkorange2",
-                  "darkmagenta","deeppink3","chocolate4", "blueviolet", "black", "darkslategrey", "saddlebrown")
+  pre_colors <- rainbow(k)
   colors <- pre_colors[1:k]
   
   #colored dendrograms
