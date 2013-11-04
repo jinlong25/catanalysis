@@ -65,6 +65,9 @@ icon_list_getter <- function(path){
   #Unzip the zip file from the 1st participant
   first_p <- unzip(paste(zip_path, files[1], sep = ""))
   
+  #Get the participant number for the first participant
+  first_p_number <- substring(files[1], 1, nchar(files[1]) - 4)
+  
   #Construct the full file name for icons.csv
   icons_csv <- paste("./", first_p_number, "/", first_p_number, "icons.csv", sep = "")
   
@@ -192,7 +195,7 @@ participant_info <- function(path){
   files <- list.files(zip_path)
   
   #Read in to demographic info for the 1st participant
-  participant1 <- unzip(paste(zip_path,files[1],sep=""))
+  participant1 <- unzip(paste(zip_path,files[1],sep = ""))
   
   #Get the participant number for the first participant
   first_p_number <- substring(files[1], 1, nchar(files[1]) - 4)
@@ -226,7 +229,7 @@ participant_info <- function(path){
                               "participant.csv", sep = "")
     
     #Read in the participant.csv
-    demo <- read.delim(sparticipant_demo, header = F, sep = ",", stringsAsFactors = F)
+    demo <- read.delim(participant_demo, header = F, sep = ",", stringsAsFactors = F)
     while(length(demo) > 13){
       demo[7] <- paste(demo[7], demo[8], sep = ",")
       demo <- demo[-8]
@@ -298,15 +301,15 @@ description_getter <- function(path){
   files <- list.files(zip_path)
   
   #Unzip the zip file from the 1st participant
-  participant1 <- unzip(paste(zip_path, files[1], sep =" "))
+  participant1 <- unzip(paste(zip_path, files[1], sep =""))
   
   #Get the participant number for the first participant
-  participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+  participant_number <- substring(files[1], 1, nchar(files[1]) - 4)
   
   #Construct the full file name for the batch.csv file
   batch <- paste("./", participant_number, "/", participant_number, "batch.csv", sep = "")
   
-  description1 <- read.csv(batch), header = F, stringsAsFactors = F)
+  description1 <- read.csv(batch, header = F, stringsAsFactors = F)
   
   #Aggregate participants' long descriptions when they use comma in the descriptions.
   while(length(description1) > 4){
@@ -392,7 +395,7 @@ cluster_heatmap <- function(path){
 
 
 #Cluster analysis
-cluster_analysis <- function(path, k, title = "", ){
+cluster_analysis <- function(path, k, title = ""){
   d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
   dm <- as.matrix(d[, -1])
   dimnames(dm) <- list(d[, 1],d[, 1])
@@ -616,7 +619,7 @@ participant_similarity <- function(path){
 #exe
 n_icons <- icon_counter(path)
 
-all_icons <- sort(as.numeric(icon_list_getter(path)))
+all_icons <- sort(icon_list_getter(path))
 
 np <- participant_counter(path)
 
