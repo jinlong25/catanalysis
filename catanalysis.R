@@ -78,8 +78,9 @@ icon_list_getter <- function(path){
     icon_list[i] <- substr(icon_list[i], 9, end - 1)
   }
   # Why is this necessary?
-  #Jinlong: The old script can only handle icon files with a three-character extension such as gif, jpg, bmp, png.
-  #It is okay so far but I rewrote it using regular expression to auto-locate the extension and then extract the 
+  #Jinlong: The old script can only handle icon files with a three-character extension
+  #such as gif, jpg, bmp, png. It is okay so far but I rewrote it using regular expression 
+  #to auto-locate the extension and then extract the 
   #icon name (without the path or the extension), so it will also work with tiff or jpeg files
   
   #Get and sort the icon names alphabetically in ascending order
@@ -105,7 +106,8 @@ participant_counter <- function(path){
 }
 
 
-#OSM and ISM Generator: extract all individual similarity matrices (ISMs) and generate the overall similarity matrix(OSM) by summing up all ISMs
+#OSM and ISM Generator: extract all individual similarity matrices (ISMs) 
+#and generate the overall similarity matrix(OSM) by summing up all ISMs
 osm_ism_generator <- function(path){
   #Construct the zip folder path and list all zip files
   zip_path <- paste(path, "zip/", sep = "")
@@ -125,8 +127,15 @@ osm_ism_generator <- function(path){
   first_matrix <- data.matrix(first_matrix[1:icon_counter(path), ])
   
   #Export the first ISM
-  write.table(first_matrix,file = paste(path, "ism/", "participant", substr(files[1], 1, nchar(files[1]) - 4),  ".mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
-  write.table(first_matrix,file = paste(path, "matrices/", "participant", substr(files[1], 1, nchar(files[1]) - 4),  ".mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
+  write.table(first_matrix,file = paste(path, "ism/", "participant", 
+                                        substr(files[1], 1, nchar(files[1]) - 4),
+                                        ".mtrx",sep = ""), sep = " ",
+                                        row.names = F, col.names = F)
+  
+  write.table(first_matrix,file = paste(path, "matrices/", "participant", 
+                                        substr(files[1], 1, nchar(files[1]) - 4),
+                                        ".mtrx",sep = ""), sep = " ", 
+                                        row.names = F, col.names = F)
   
   #Summing up all ISMs for OSM and export each ISM
   osm <- first_matrix
@@ -147,8 +156,15 @@ osm_ism_generator <- function(path){
     matrix_i <- data.matrix(matrix_i[1:icon_counter(path), ])
     
     #Export the ISM as .mtrx for KlipArt and .csv for catanalysis
-    write.table(matrix_i, file = paste(path, "ism/", "participant", substr(files[i], 1, nchar(files[i]) - 4),  ".mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
-    write.table(matrix_i, file = paste(path, "matrices/", "participant", substr(files[i], 1, nchar(files[i]) - 4),  ".mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
+    write.table(matrix_i, file = paste(path, "ism/", "participant", 
+                                       substr(files[i], 1, nchar(files[i]) - 4),
+                                       ".mtrx", sep = ""), sep = " ", 
+                                       row.names = F, col.names = F)
+    
+    write.table(matrix_i, file = paste(path, "matrices/", "participant", 
+                                       substr(files[i], 1, nchar(files[i]) - 4), 
+                                       ".mtrx", sep = ""), sep = " ",
+                                       row.names = F, col.names = F)
     
     #Add the ISM to OSM
     osm <- osm + matrix_i
@@ -156,15 +172,19 @@ osm_ism_generator <- function(path){
   
   #Export OSM
   #Uncomment the line below if export data for KlipArt
-  write.table(osm, file = paste(path, "matrices/", "total.mtrx", sep = ""), sep = " ", row.names = F,  col.names = F)
+  write.table(osm, file = paste(path, "matrices/", "total.mtrx", sep = ""), 
+              sep = " ", row.names = F,  col.names = F)
+  
   osm <- cbind(icon_list_getter(path), osm)
-  write.table(osm, file = paste(path, "osm.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
+  write.table(osm, file = paste(path, "osm.csv", sep = ""), 
+              sep = ",", row.names = F,  col.names = F)
 }
 
 
 
 #################ANALYSIS FUNCTIONS##############################
-#Participant info: collect demographic info and basic experiment info (# of groups created and time spent in seconds)
+#Participant info: collect demographic info and basic experiment info (# of groups created
+#and time spent in seconds)
 participant_info <- function(path){
   
   #Read in the zip file
@@ -183,7 +203,8 @@ participant_info <- function(path){
   #Read in the participant.csv for the 1st participant
   demo1 <- read.delim(first_demo, header = F, sep = ",",stringsAsFactors = F)
   
-  #Aggregate eduction background for participant who use comma(s) in their eduction background (e.g., geography, education, business)
+  #Aggregate eduction background for participant who use comma(s) in their eduction 
+  #background (e.g., geography, education, business)
   while(length(demo1) > 13){
     demo1[7] <- paste(demo1[7], demo1[8], sep = ",")
     demo1 <- demo1[-8]
@@ -201,7 +222,8 @@ participant_info <- function(path){
     participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
     
     #Construct the full file name for participant.csv file
-    participant_demo <- paste("./", participant_number, "/", participant_number, "participant.csv", sep = "")
+    participant_demo <- paste("./", participant_number, "/", participant_number, 
+                              "participant.csv", sep = "")
     
     #Read in the participant.csv
     demo <- read.delim(sparticipant_demo, header = F, sep = ",", stringsAsFactors = F)
@@ -225,7 +247,8 @@ participant_info <- function(path){
     participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
     
     #Construct the full file name for assignment.csv file
-    participant_assignment <- paste("./", participant_number, "/", participant_number, "assignment.csv", sep = "")
+    participant_assignment <- paste("./", participant_number, "/", participant_number, 
+                                    "assignment.csv", sep = "")
     
     groups <- read.delim(participant_assignment, header = F, sep = ",", stringsAsFactors = F)
     
@@ -263,7 +286,8 @@ participant_info <- function(path){
   demographic <- cbind(demographic, time_spent)
   
   #Export the demographic dataframe as a csv file
-  write.table(demographic, file = paste(path, "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
+  write.table(demographic, file = paste(path, "participant.csv", sep = ""),
+              sep = ",", row.names = F,  col.names = F)
 }
   
 #description_getter: extract the linguistic labels (both long and short) from all participants and store in a single csv file
@@ -317,63 +341,87 @@ description_getter <- function(path){
   }
   
   #Export the description dataframe as a csv file
-  write.table(description, file = paste(path, "description.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
+  write.table(description, file = paste(path, "description.csv", sep = ""), 
+              sep = ",", row.names = F,  col.names = F)
 }
   
 
 
-# This function generates a heatmap based on the OSM.
-# No dendrograms are generated and the icons are in alphabetical order
-heat_map <- function(path){
-  d = read.csv(paste(path,"osm.csv",sep=""),header=FALSE)
-  dm = as.matrix(d[,-1])
-  dimnames(dm) = list(d[,1],d[,1])
+#heatmap: generates a heatmap based on the OSM.
+#No dendrograms are generated and the icons are in alphabetical order
+#Jinlong: It is intended to be a raw heat map without dendrograms. 
+#The cluster heatmap function is right below this function
+heatmap <- function(path){
   
-  # The export of the heatmap is realized as a tiff file. Other options are ....??
-  #Jinlong: other options includes jpg, bmp, png, etc. but each has its own function with slightly different arguments and different default values for arguments
-  tiff(filename = paste(path, "heat_map.tiff", sep=""),width = 2000,height=2000,units="px",pointsize=5,compression="none",bg="white",res=600)
-  heatmap.2(as.matrix(participant_counter(path)-dm),Rowv=FALSE, Colv="Rowv",dendrogram="none",margin = c(3,3),cexRow =0.6,cexCol=0.6,revC=F,trace="none",key=F)
+  #Read in the osm.csv file and format the row/column names
+  d = read.csv(paste(path, "osm.csv", sep = ""),header = F)
+  dm = as.matrix(d[, -1])
+  dimnames(dm) = list(d[, 1],d[, 1])
+  
+  #The export of the heatmap is realized as a tiff file. Other options are ....??
+  #Jinlong: other options includes jpg, bmp, png, etc. but each has its own function with
+  #slightly different arguments and different default values for arguments
+  #Drawing the heatmap and export as a tiff file
+  tiff(filename = paste(path, "heat_map.tiff", sep = ""),width = 2000, height = 2000, units = "px",
+       pointsize = 5,compression = "none", bg = "white", res = 600)
+  heatmap.2(as.matrix(participant_counter(path) - dm), Rowv = F, Colv = "Rowv", dendrogram = "none", 
+            margin = c(3, 3), cexRow = 0.6, cexCol = 0.6, revC = F, trace = "none", key = F)
   dev.off()
 }
 
-#Heatmap with dendrogram
-heat_map_w_dend <- function(path){
-  d = read.csv(paste(path,"osm.csv",sep=""),header=FALSE)
-  dm = as.matrix(d[,-1])
-  dimnames(dm) = list(d[,1],d[,1])
+#cluster_heatmap: generates a cluster heatmap based on the OSM
+cluster_heatmap <- function(path){
   
-  cluster = hclust(method = "ward", as.dist(participant_counter(path)-dm))
+  #Read in the osm.csv file and format the row/column names
+  d = read.csv(paste(path, "osm.csv", sep = ""), header = F)
+  dm = as.matrix(d[, -1])
+  dimnames(dm) = list(d[, 1],d[, 1])
+  
+  #Generate the dendrogram using wards method
+  cluster = hclust(method = "ward", as.dist(participant_counter(path) - dm))
   dend = as.dendrogram(cluster)
   
-  tiff(filename = paste(path, "heat_map_w_dend.tiff", sep=""),width = 2000,height=2000,units="px",pointsize=5,compression="none",bg="white",res=600)
-  heatmap.2(as.matrix(participant_counter(path)-dm),Rowv=dend,Colv=dend,margin = c(3,3),cexRow =0.6,cexCol=0.6,dendrogram="both",revC=TRUE,trace="none",key=TRUE)
+  #Drawing the cluster heatmap and export as a tiff file
+  tiff(filename = paste(path, "cluster_heatmap.tiff", sep = ""), width = 2000, height = 2000, units = "px",
+       pointsize = 5, compression = "none", bg = "white", res = 600)
+  heatmap.2(as.matrix(participant_counter(path) - dm), Rowv = dend, Colv = dend, 
+            margin = c(3,3), cexRow = 0.6, cexCol = 0.6, dendrogram = "both", 
+            revC = T, trace = "none", key = T)
   dev.off()
 }
 
 
 #Cluster analysis
-cluster_analysis <- function(path, k, title = ""){
-  d = read.csv(paste(path,"osm.csv",sep=""),header=FALSE)
-  # old code: dm = as.matrix(d[,-1])
-  #  dimnames(dm) = list(d[,1],d[,1])
-  dm = as.matrix(d)
+cluster_analysis <- function(path, k, title = "", ){
+  d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+  dm <- as.matrix(d[, -1])
+  dimnames(dm) <- list(d[, 1],d[, 1])
+  #Old code: dm = as.matrix(d)
+  #Jinlong: I'm pretty sure the code above won't work for this function
   
-  ave = hclust(method = "average", as.dist(participant_counter(path)-dm))
-  comp = hclust(method = "complete", as.dist(participant_counter(path)-dm))
-  ward = hclust(method = "ward", as.dist(participant_counter(path)-dm))
+  ave = hclust(method = "average", as.dist(participant_counter(path) - dm))
+  comp = hclust(method = "complete", as.dist(participant_counter(path) - dm))
+  ward = hclust(method = "ward", as.dist(participant_counter(path) - dm))
   
   # load code of A2R function
   # Explain what this function is doing!
   source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
   
+  #Create a color scheme from rainbow color scheme
   pre_colors <- rainbow(k)
-  colors <- pre_colors[1:k]
+  colors <- pre_colors[1: k]
   
+  pdf(file = paste(path, "dendrograms_", k, "_cluster.pdf", sep=""),
+      width = 6, height = 2.5, 
+      bg = "white", pointsize = 0.5)
   
-  pdf(file = paste(path, "dendrograms_", k, "_cluster.pdf", sep=""),width = 6, height =2.5, bg = "white", pointsize = 1)
-  A2Rplot(ave, k=k, boxes = FALSE,col.up = "gray50", col.down = colors, main = paste(title, " Average Linkage ", k, " clusters", sep=""))
-  A2Rplot(comp, k=k, boxes = FALSE,col.up = "gray50", col.down = colors, main = paste(title, " Complete Linkage ", k, " clusters", sep=""))
-  A2Rplot(ward, k=k, boxes = FALSE,col.up = "gray50", col.down = colors, main = paste(title, " Ward's Method ", k, " clusters", sep=""))
+  A2Rplot(ave, k = k, boxes = F, col.up = "gray50", col.down = colors, 
+          main = paste(title, " Average Linkage ", k, " clusters", sep = ""))
+  A2Rplot(comp, k = k, boxes = F, col.up = "gray50", col.down = colors, 
+          main = paste(title, " Complete Linkage ", k, " clusters", sep = ""))
+  A2Rplot(ward, k = k, boxes = F, col.up = "gray50", col.down = colors, 
+          main = paste(title, " Ward's Method ", k, " clusters", sep = ""))
+  
   dev.off()
   
 }
@@ -574,9 +622,9 @@ np <- participant_counter(path)
 
 osm_ism_generator(path)
 
-heat_map(path)
+heatmap(path)
 
-heat_map_w_dend(path)
+cluster_heatmap(path)
 
 participant_info(path)
 
