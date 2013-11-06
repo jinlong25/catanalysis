@@ -1,5 +1,4 @@
-#Test for GitHub
-#Instruction#
+#Instruction
 #1. Create a folder with the name of the experiment;
 #2. In the experiment folder, create three subfolder named "zip", "matrices", 
 #and "ism" respectively;
@@ -14,14 +13,17 @@ rm(list=ls())
 
 #Define the path to the experiment folder (with a closing "/" or "\")
 #Note that the path delimiter in Windows is "\" while the path delimiter in Mac in "/"
-path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2100 mturk landscape test"
+#path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2100 mturk landscape test"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/"
+#path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/red/"
+#path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/green/"
+path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/black/"
 
 #Define the name of the experiment
-scenario_name <- "landscapes test"
+scenario_name <- "birdseye"
 
 #Define the max number of clusters
-max_cluster <- 8
+max_cluster <- 5
 
 #Uncomment the install.package() functions if you haven't installed these packages
 #install.packages("gplots")
