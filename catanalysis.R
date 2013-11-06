@@ -1,4 +1,5 @@
 #Instruction
+###KEVIN - consider removing the first 2 instructions and the first half of the 3rd###
 #1. Create a folder with the name of the experiment;
 #2. In the experiment folder, create three subfolder named "zip", "matrices", 
 #and "ism" respectively;
@@ -11,6 +12,32 @@
 #Clear the workspace
 rm(list=ls())
 
+
+###Automated folder creation###
+
+###Set path for where the main folder should be located###
+folder_location <- "C:/Users/..."
+###Name experiment main folder within quotations###
+MainFolder <- paste(folder_location, "Folder1", sep="/")
+dir.create(MainFolder)
+zipsub <- paste(MainFolder, "zip", sep="/")
+dir.create(zipsub)
+ismsub <- paste(MainFolder, "ism", sep="/")
+dir.create(ismsub)
+matricessub <- paste(MainFolder, "matrices", sep="/")
+dir.create(matricessub)
+
+path <- MainFolder
+
+###Checks for path ending in "/" ###
+if(substr(path, nchar(path), nchar(path)) != "/"){
+  path <- paste(path, "/", sep = "")
+}
+
+###PLACE ZIP FILES INTO "zip" SUBFOLDER INSIDE THE EXPERIMENT MAIN FOLDER###
+
+
+###KEVIN - Consider removing the next 3 lines###
 #Define the path to the experiment folder (with a closing "/" or "\")
 #Note that the path delimiter in Windows is "\" while the path delimiter in Mac in "/"
 #path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2100 mturk landscape test"
