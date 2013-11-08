@@ -431,11 +431,9 @@ cluster_analysis <- function(path, k, title = ""){
   #Old code: dm = as.matrix(d)
   #Jinlong: I'm pretty sure the code above won't work for this function
   
-  ###Similarity###
-  ave = hclust(method = "average", as.dist(dm))
-  ###Similarity###
-  comp = hclust(method = "complete", as.dist(dm))
   ###Participants minus osm generates dissimilarity###
+  ave = hclust(method = "average", as.dist(participant_counter(path) - dm))
+  comp = hclust(method = "complete", as.dist(participant_counter(path) - dm))
   ward = hclust(method = "ward", as.dist(participant_counter(path) - dm))
   
   # load code of A2R function
