@@ -44,10 +44,10 @@ if(substr(path, nchar(path), nchar(path)) != "/"){
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/red/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/green/"
-path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/black/"
+path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
 
 #Define the name of the experiment
-scenario_name <- "birdseye"
+scenario_name <- "sideview"
 
 #Define the max number of clusters
 max_cluster <- 5
