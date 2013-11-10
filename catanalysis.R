@@ -612,36 +612,44 @@ overview_getter <- function(path){
 
 ##Participant similarity analysis
 participant_similarity <- function(path){
+  #List all ISMs
   isms <- list.files(paste(path, "ism/", sep = ""))
   all_isms <- list()
 
-  participants <- c()
+  #Read in all ISMs and store them in a list named all_isms
   for (i in 1:length(isms)){
-    aism <- read.delim(paste(paste(path, "ism/", sep = ""),isms[i],sep=""),header=FALSE, sep=" ",stringsAsFactors=F)
-    #assign(paste("p",i,sep=""),ism)
+    aism <- read.delim(paste(paste(path, "ism/", sep = ""), isms[i], sep = ""),
+                       header = F, sep = " ", stringsAsFactors = F)
     all_isms <- c(all_isms, list(aism))
   }
   
+  #Calculate participant similarity matrix (dm) of all pairs of partcipants based on the hamming distance of their ISMs
   dm <- matrix(0, ncol = np, nrow = np)
-  for (i in 1:np){
-    for (j in 1:np){
+  for (i in 1: np){
+    for (j in 1: np){
       dm[i,j] <- sum(abs(all_isms[[i]] - all_isms[[j]]))
     }
   }
   
+  #Extract the participant number of all participants and store them in a vector named names
   names <- c()
-  for (i in 1:length(isms)){
+  for (i in 1: length(isms)){
     name <- isms[i]
     names <- append(names, substr(name, 12, nchar(name) - 5))
   }
   
+  #Assign participants numbers as the row&column names of the participant similarity matrix (dm)
   colnames(dm) <- names
   rownames(dm) <- names
   
+  #Perform cluster analysis based on participant similarity matrix using Ward's method and construct a dendrogram
   cluster <- hclust(method = "ward", as.dist(dm))
   dend <- as.dendrogram(cluster)
-
-  tiff(filename = paste(path, "participant_simiarlity.tiff", sep=""),width = 2000,height=2000,units="px",pointsize=5,compression="none",bg="white",res=600)
+  
+  #Export the dendrogram as a tiff file
+  tiff(filename = paste(path, "participant_simiarlity.tiff", sep =" "),
+       width = 2000, height=2000, units="px",
+       pointsize=5, compression = "none", bg = "white", res = 600)
   plot(dend)
   dev.off()
 }
