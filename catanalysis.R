@@ -26,6 +26,8 @@ path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experime
 #Auto-create two subfolders "ism" and "matrices"
 dir.create(paste(path, "matrices/", sep="")) 
 dir.create(paste(path, "ism/", sep=""))
+klipart_path <- paste(path, scenario_name, "-klipart/", sep = "")
+dir.create(klipart_path)
 
 #Uncomment the install.package() functions if you haven't installed these packages
 #install.packages("gplots")
@@ -350,6 +352,9 @@ description_getter <- function(path){
   #Export the description dataframe as a csv file
   write.table(description, file = paste(path, "description.csv", sep = ""), 
               sep = ",", row.names = F,  col.names = F)
+  
+  #Export batch.csv for Klipart
+  write.table(description, file=paste(klipart_path, "batch.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
 }
   
 
