@@ -92,6 +92,7 @@ icon_list_getter <- function(path){
   #to auto-locate the extension and then extract the 
   #icon name (without the path or the extension), so it will also work with tiff or jpeg files
   
+  
   #Get and sort the icon names alphabetically in ascending order
   icon_list = sort(icon_list)
   
@@ -297,6 +298,9 @@ participant_info <- function(path){
   #Export the demographic dataframe as a csv file
   write.table(demographic, file = paste(path, "participant.csv", sep = ""),
               sep = ",", row.names = F,  col.names = F)
+  
+  #Export the participant.csv for KlipArt
+  write.table(demographic, file = paste(klipart_path, "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
 }
   
 #description_getter: extract the linguistic labels (both long and short) from all participants and store in a single csv file
