@@ -17,7 +17,7 @@ max_cluster <- 5
 
 #Define the path to the experiment folder (with a closing "/" or "\")
 #Note that the path delimiter in Windows is "\" while the path delimiter in Mac in "/"
-path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2100 mturk landscape test"
+path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/red/"
@@ -667,10 +667,27 @@ prototype_freq <- function(path){
     
   #Export batch.csv for Klipart
   write.table(freq, file=paste(path, "prototype.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
+  return(freq)
 }
 
 
-
+# multi-dimensional scaling
+mdscaling <- function(path){
+  d <-  read.csv(paste(path, "osm.csv", sep = ""), header = F)
+  dm <- as.matrix(d[, -1])
+  dimnames(dm) <- list(d[, 1],d[, 1])
+  dm_dist <- dist(dm, method = "euclidean")
+  mds <- cmdscale(dm_dist)
+  col <- rainbow(50)
+  tiff(filename = paste(path, "mds.tiff", sep = ""), width = 3, height =3, units = "in", pointsize = 5, compression = "none", bg = "white", res = 600, antialias = "subpixel")
+  plot(min(mds[, 1], mds[, 2]) : max(mds[, 1],mds[, 2]), min(mds[, 1], mds[, 2]) : max(mds[, 1], mds[, 2]), type = "n", xlab = "", ylab = "", main = "Multidimensional Scaling")
+  for(i in 1: nrow(mds)){
+    points(mds[i, 1], mds[i, 2], type = "p", cex = 1.5)
+  }
+  dev.off()
+  return(mds)
+}
+  
 #exe
 n_icons <- icon_counter(path)
 
@@ -680,7 +697,7 @@ np <- participant_counter(path)
 
 osm_ism_generator(path)
 
-prototype_freq(path)
+prototypes <- prototype_freq(path)
 
 heatmap(path)
 
@@ -693,6 +710,14 @@ overview_getter(path)
 description_getter(path)
 
 participant_similarity(path)
+
+mds <- mdscaling(path)
+
+
+# generate output file for icon viewer containing mds results and prototype frequencies
+mdsc <- cbind(mds,prototypes[3])
+write.table(mdsc, file = paste(path, "mds.txt", sep = ""), sep = " ", quote = FALSE,
+                                       row.names = T, col.names = T)
 
 ###Change the number here to create colored-dendrograms at different solutions
 for(i in 2: max_cluster){
