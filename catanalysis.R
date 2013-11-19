@@ -679,7 +679,7 @@ mdscaling <- function(path){
   dm_dist <- dist(dm, method = "euclidean")
   mds <- cmdscale(dm_dist)
   col <- rainbow(50)
-  tiff(filename = paste(path, "mds.tiff", sep = ""), width = 3, height =3, units = "in", pointsize = 5, compression = "none", bg = "white", res = 600, antialias = "subpixel")
+  tiff(filename = paste(path, "mds.tiff", sep = ""), width = 3, height =3, units = "in", pointsize = 5, compression = "none", bg = "white", res = 600)
   plot(min(mds[, 1], mds[, 2]) : max(mds[, 1],mds[, 2]), min(mds[, 1], mds[, 2]) : max(mds[, 1], mds[, 2]), type = "n", xlab = "", ylab = "", main = "Multidimensional Scaling")
   for(i in 1: nrow(mds)){
     points(mds[i, 1], mds[i, 2], type = "p", cex = 1.5)
