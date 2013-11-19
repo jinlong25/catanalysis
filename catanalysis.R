@@ -10,7 +10,7 @@
 rm(list=ls())
 
 #Define the name of the experiment
-scenario_name <- "sideview"
+scenario_name <- "landscape_ss1"
 
 #Define the max number of clusters
 max_cluster <- 5
@@ -18,6 +18,7 @@ max_cluster <- 5
 #Define the path to the experiment folder (with a closing "/" or "\")
 #Note that the path delimiter in Windows is "\" while the path delimiter in Mac in "/"
 path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2100 mturk landscape test"
+#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/red/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/green/"
@@ -638,6 +639,38 @@ participant_similarity <- function(path){
   dev.off()
 }
 
+
+#Visualize the frequency that each icon is being selected as group prototype
+prototype_freq <- function(path){
+  
+  #Construct the path for the zip folder and list all the zip files
+  zip_path <- paste(path, "zip/", sep = "")
+  files <- list.files(zip_path)
+  
+  #Create a dataframe to store the prototype frequency
+  freq <- data.frame(icon = icon_list_getter(path), 
+                     icon_index = 0: (length(icon_list_getter(path))-1), 
+                     count = rep(0, length(icon_list_getter(path)))
+                    )
+  
+  for(p in files){
+    participant <- unzip(paste(zip_path, p, sep =""))
+    participant_number <- substring(p, 1, nchar(files[1]) - 4)
+    prototype_file <- paste("./", participant_number, "/", participant_number, "gprototypes.csv", sep = "")
+    prototype <- read.csv(prototype_file, header = F, stringsAsFactors = F)
+    for(j in 1:nrow(prototype)){
+      if(prototype[j, 4] != ""){
+        freq[prototype[j, 3] + 1, 3] = freq[prototype[j, 3] + 1, 3] + 1
+      }
+    }
+  }
+    
+  #Export batch.csv for Klipart
+  write.table(freq, file=paste(path, "prototype.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
+}
+
+
+
 #exe
 n_icons <- icon_counter(path)
 
@@ -646,6 +679,8 @@ all_icons <- sort(icon_list_getter(path))
 np <- participant_counter(path)
 
 osm_ism_generator(path)
+
+prototype_freq(path)
 
 heatmap(path)
 
