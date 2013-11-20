@@ -193,7 +193,7 @@ osm_ism_generator <- function(path){
 
 
 #assignment_getter: generate the assignment.csv for KlipArt
-assignment_getter <- (path){
+assignment_getter <- function(path){
   #Create an empty dataframe
   df = data.frame()
   
@@ -740,6 +740,7 @@ participant_similarity(path)
 
 mds <- mdscaling(path)
 
+assignment_getter(path)
 
 # generate output file for icon viewer containing mds results and prototype frequencies
 mdsc <- cbind(mds,prototypes[3])
