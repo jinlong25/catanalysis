@@ -48,17 +48,17 @@ library(R2HTML)
 
 #Assign the location of the icons 
 #this is also where the output html file will be saved to
-iconlocation<-'C:/Users/Sparks/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/archive/icons'
+iconlocation<-'C:/Users/Sparks/Dropbox/Catscan experiments/Experiments/2102 mturk landscape ss2/icons'
 
 
 ##Define path to where the osm is located
-path <- "C:/Users/Sparks/Desktop/Landscape/"
+path <- 'C:/Users/Sparks/Dropbox/Catscan experiments/Experiments/2102 mturk landscape ss2'
 ##Read in the osm
-osm <- read.csv(paste(path,"osm.csv",sep=""),header=FALSE)
+osm <- read.csv(paste(path,"/osm.csv",sep=""),header=FALSE)
 
 
 #Define the max number of clusters, BUT DEFINE BETWEEN 2-8
-max_cluster <- 4
+max_cluster <- 5
 
 ##############################################################
 
@@ -76,14 +76,14 @@ ward = hclust(method = "ward", as.dist(participant_counter(path) - dm))
 
 
 ##Starts main loop
-for(k in 2:max_cluster){
+for(k in 3:max_cluster){
   
   
   #Average Linkage Begins
   dend_ave <- as.data.frame(cutree(ave, k))  
   dend_ave[ ,2] <- rownames(dend_ave)
   colnames(dend_ave) <- c("group", "icon")
-
+  
   ###Creates a list of icon names in cluster 1###
   #Creates empty list
   aveCluster1 <- list()
@@ -109,7 +109,7 @@ for(k in 2:max_cluster){
     }
     l=l+1
   }
-
+  
   ###Creates a list of icon names in cluster 3###
   aveCluster3 <- list()
   l<-1
@@ -182,7 +182,7 @@ for(k in 2:max_cluster){
   masterAveCluster[7]=list(aveCluster7)
   masterAveCluster[8]=list(aveCluster8)
   
-
+  
   #First for loop that will cycle through the number of cluster groups NEED TO CHANGE K, PROBABLY WRONG
   for (j in 1:k){
     #Defines which cluster group we are looking at
@@ -299,7 +299,7 @@ for(k in 2:max_cluster){
   masterCompCluster[7]=list(compCluster7)
   masterCompCluster[8]=list(compCluster8)
   
-
+  
   #First for loop that will cycle through the number of cluster groups NEED TO CHANGE K, PROBABLY WRONG
   for (j in 1:k){
     #Defines which cluster group we are looking at
@@ -413,7 +413,7 @@ for(k in 2:max_cluster){
   masterWardCluster[6]=list(wardCluster6)
   masterWardCluster[7]=list(wardCluster7)
   masterWardCluster[8]=list(wardCluster8)
-
+  
   
   #First for loop that will cycle through the number of cluster groups NEED TO CHANGE K, PROBABLY WRONG
   for (j in 1:k){
@@ -430,12 +430,6 @@ for(k in 2:max_cluster){
   } 
   
 }
-
-
-
-
-
-
 
 
 
