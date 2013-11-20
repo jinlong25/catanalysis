@@ -192,6 +192,33 @@ osm_ism_generator <- function(path){
 }
 
 
+#assignment_getter: generate the assignment.csv for KlipArt
+assignment_getter <- (path){
+  #Create an empty dataframe
+  df = data.frame()
+  
+  #List all zip files
+  zip_path <- paste(path, "zip/", sep = "")
+  files <- list.files(zip_path)
+  
+  for(i in 1:length(files)){
+    #Read in the assignment.csv file
+    participant_i <- unzip(paste(zip_path, files[i], sep = ""))
+    
+    #Get the participant number for the first participant
+    participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+    
+    #Construct the full file name for assignment.csv file
+    participant_assignment <- paste("./", participant_number, "/", participant_number, 
+                                    "assignment.csv", sep = "")
+    
+    assignment <- read.delim(participant_assignment, header = F, sep = ",", stringsAsFactors = F)
+    df = rbind(df, assignment)
+  }
+  #Export the assignment.csv
+  write.table(df, file = paste(klipart_path, "assignment.csv", sep = ""),
+              sep = ",", row.names = F,  col.names = F)
+}
 
 #################ANALYSIS FUNCTIONS##############################
 #Participant info: collect demographic info and basic experiment info (# of groups created
