@@ -29,6 +29,7 @@ dir.create(paste(path, "ism/", sep=""))
 klipart_path <- paste(path, scenario_name, "-klipart/", sep = "")
 dir.create(klipart_path)
 dir.create(paste(klipart_path, "matrices/", sep="")) 
+dir.create(paste(path, "matrices/", sep="")) 
 
 #Uncomment the install.package() functions if you haven't installed these packages
 #install.packages("gplots")
@@ -177,13 +178,20 @@ osm_ism_generator <- function(path){
                                        ".mtrx", sep = ""), sep = " ",
                                        row.names = F, col.names = F)
     
+    write.table(matrix_i, file = paste(path, "matrices/", "participant", 
+                                       substr(files[i], 1, nchar(files[i]) - 4), 
+                                       ".mtrx", sep = ""), sep = " ",
+                row.names = F, col.names = F)
+    
     #Add the ISM to OSM
     osm <- osm + matrix_i
   }
   
   #Export OSM
-  #Uncomment the line below if export data for KlipArt
   write.table(osm, file = paste(path, "matrices/", "total.mtrx", sep = ""), 
+              sep = " ", row.names = F,  col.names = F)
+  
+  write.table(osm, file = paste(klipart_path, "matrices/", "total.mtrx", sep = ""), 
               sep = " ", row.names = F,  col.names = F)
   
   osm <- cbind(icon_list_getter(path), osm)
