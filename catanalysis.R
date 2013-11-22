@@ -25,10 +25,10 @@ path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2101 mturk landscape
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
 
 #Auto-create two subfolders "ism" and "matrices"
-dir.create(paste(path, "matrices/", sep="")) 
 dir.create(paste(path, "ism/", sep=""))
 klipart_path <- paste(path, scenario_name, "-klipart/", sep = "")
 dir.create(klipart_path)
+dir.create(paste(klipart_path, "matrices/", sep="")) 
 
 #Uncomment the install.package() functions if you haven't installed these packages
 #install.packages("gplots")
@@ -172,7 +172,7 @@ osm_ism_generator <- function(path){
                                        ".mtrx", sep = ""), sep = " ", 
                                        row.names = F, col.names = F)
     
-    write.table(matrix_i, file = paste(path, "matrices/", "participant", 
+    write.table(matrix_i, file = paste(klipart_path, "matrices/", "participant", 
                                        substr(files[i], 1, nchar(files[i]) - 4), 
                                        ".mtrx", sep = ""), sep = " ",
                                        row.names = F, col.names = F)
