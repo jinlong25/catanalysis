@@ -6,6 +6,11 @@
 #5. To create dendrograms at different solutions, manually change the number in the last line of the script.
 #6. Go find the result in the experiment folder
 
+#KlipArt Instruction
+#A klipart folder will be created inside the experiment folder. In the klipart folder:
+#1. Zip the matrices folder into a zip file;
+#2. Put a icons.zip file that contains all the icon files.
+
 #Clear the workspace
 rm(list=ls())
 
