@@ -10,16 +10,16 @@
 rm(list=ls())
 
 #Define the name of the experiment
-scenario_name <- "landscape_ss1"
+scenario_name <- "landscape_test"
 
 #Define the max number of clusters
 max_cluster <- 5
 
 #Define the path to the experiment folder (with a closing "/" or "\")
 #Note that the path delimiter in Windows is "\" while the path delimiter in Mac in "/"
-path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
+#path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
-#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/"
+path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/red/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/green/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
@@ -64,6 +64,7 @@ icon_counter <- function(path){
 }
 
 #Icon list getter: get a list of icon names
+#It also saves the icon.csv needed for KlipArt
 icon_list_getter <- function(path){
   
   #Construct the zip folder path and list all the zip files 
@@ -94,9 +95,22 @@ icon_list_getter <- function(path){
   #to auto-locate the extension and then extract the 
   #icon name (without the path or the extension), so it will also work with tiff or jpeg files
   
-  
   #Get and sort the icon names alphabetically in ascending order
   icon_list = sort(icon_list)
+  
+  #Extract the icon names with file type (e.g. .jpg) for KlipArt
+  icon_list_klipart <- icons
+  for(j in 1:nrow(icon_list_klipart)){
+    icon_list_klipart[j, 2] <- substr(icon_list_klipart[j, 2], 9, nchar(icon_list_klipart[j, 2]))
+  }
+  colnames(icon_list_klipart) <- c("index", "icon_names")
+  
+  #Sort the icon list by index
+  icon_list_klipart <- icon_list_klipart[order(icon_list_klipart$index) , ]
+  
+  #Export the list as a csv file
+  write.table(icon_list_klipart, file = paste(klipart_path, "icon.csv", sep = ""),
+              sep = ",", row.names = F,  col.names = F)
   
   #Return the icon list as a vector
   return(icon_list)
