@@ -15,7 +15,7 @@
 rm(list=ls())
 
 #Define the name of the experiment
-scenario_name <- "landscape_test"
+scenario_name <- "directions_3D_fgr"
 
 #Define the max number of clusters
 max_cluster <- 5
@@ -24,10 +24,11 @@ max_cluster <- 5
 #Note that the path delimiter in Windows is "\" while the path delimiter in Mac in "/"
 #path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
-path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/"
+#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/red/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/green/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
+path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
 
 #Auto-create two subfolders "ism" and "matrices"
 dir.create(paste(path, "ism/", sep=""))

@@ -6,17 +6,17 @@
 library("Cairo")
 
 #Deinfe max/min cluster solution
-min = 4
-max = 4
+min = 2
+max = 5
 
 #Define the layout
-rows = 1
+rows = 4
 columns = 3
 
 #Define variables for the exported grpahic
 #Change the width and height according to the layout
 Cairo(file = paste(path, "star_viz_dendrogram_black.png", sep = ""), type = "png", 
-      units = "px", width = 2250, height = 900)
+      units = "px", width = 2250, height = 3600)
 
 #Partition the drawing device
 par(mfrow = c(rows, columns))
@@ -25,14 +25,14 @@ par(mfrow = c(rows, columns))
 osm <- read.csv(paste(path,"osm.csv",sep=""),header = F)
 
 #Correct the order of the icons
-icon_order <- read.csv(file = "http://dl.dropboxusercontent.com/u/15662467/birdseye_order_fix.csv", 
-                       header = F, stringsAsFactors = F)
-for(i in 1:nrow(icon_order)){
-  icon_order[i, 3] <- substr(icon_order[i, 1], 5, nchar(icon_order[i, 1]))
-}
+# icon_order <- read.csv(file = "http://dl.dropboxusercontent.com/u/15662467/birdseye_order_fix.csv", 
+#                        header = F, stringsAsFactors = F)
+# for(i in 1:nrow(icon_order)){
+#   icon_order[i, 3] <- substr(icon_order[i, 1], 5, nchar(icon_order[i, 1]))
+# }
 
 #Rename all icons
-osm[ ,1] <- as.numeric(icon_order[,3])
+#osm[ ,1] <- as.numeric(icon_order[,3])
 
 #Create the osm for cluster analysis
 dm <- as.matrix(osm[,-1])
@@ -63,7 +63,7 @@ degrees.to.radians<-function(degrees=45,minutes=30){
 #Draw the star plot for all three clustering methods
 for(k in min: max){
   dend_ave <- as.data.frame(cutree(ave, k))
-  dend_ave[ ,2] <- as.numeric(rownames(dend_ave))
+  dend_ave[ ,2] <- as.numeric(gsub("\\D", "", rownames(dend_ave)))
   colnames(dend_ave) <- c("group", "icon")
   
   plot(0, 0, type = "n", xaxt = "n", yaxt = "n", 
@@ -77,7 +77,7 @@ for(k in min: max){
   }
   
   dend_comp <- as.data.frame(cutree(comp, k))
-  dend_comp[ ,2] <- as.numeric(rownames(dend_comp))
+  dend_comp[ ,2] <- as.numeric(gsub("\\D", "", rownames(dend_comp)))
   colnames(dend_comp) <- c("group", "icon")
   
   plot(0, 0, type = "n", xaxt = "n", yaxt = "n", 
@@ -92,7 +92,7 @@ for(k in min: max){
   
   
   dend_ward <- as.data.frame(cutree(ward, k))
-  dend_ward[ ,2] <- as.numeric(rownames(dend_ward))
+  dend_ward[ ,2] <- as.numeric(gsub("\\D", "", rownames(dend_ward)))
   colnames(dend_ward) <- c("group", "icon")
   
   plot(0, 0, type = "n", xaxt = "n", yaxt = "n", 
