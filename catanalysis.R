@@ -419,11 +419,11 @@ description_getter <- function(path){
   
 
 
-#heatmap: generates a heatmap based on the OSM.
+#osm_viz: generates a heatmap based on the OSM.
 #No dendrograms are generated and the icons are in alphabetical order
 #Jinlong: It is intended to be a raw heat map without dendrograms. 
 #The cluster heatmap function is right below this function
-heatmap <- function(path){
+osm_viz <- function(path){
   
   #Read in the osm.csv file and format the row/column names
   d = read.csv(paste(path, "osm.csv", sep = ""),header = F)
@@ -754,7 +754,7 @@ osm_ism_generator(path)
 
 prototypes <- prototype_freq(path)
 
-heatmap(path)
+osm_viz(path)
 
 cluster_heatmap(path)
 
