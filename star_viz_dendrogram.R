@@ -5,6 +5,11 @@
 #install.packages("Cairo")
 library("Cairo")
 
+#Deinfe the starting angle (in degree) with due north as 0 degree and increment (in degree)
+starting_angle <- 90
+increment <- 360/n_icons
+
+
 #Deinfe max/min cluster solution
 min = 2
 max = 5
@@ -71,8 +76,8 @@ for(k in min: max){
        bty="n", xlab = "", ylab = "", 
        main = paste("Average Linkage:", k, "cluster", sep = " "), cex.main = 4)
   for(i in 1:nrow(dend_ave)){
-    x <- -5*sin(degrees.to.radians(5*dend_ave[i, 2]))
-    y <- 5*cos(degrees.to.radians(5*dend_ave[i, 2]))
+    x <- -5*sin(degrees.to.radians(increment*dend_ave[i, 2] + starting_angle - increment))
+    y <- 5*cos(degrees.to.radians(increment*dend_ave[i, 2] + starting_angle - increment))
     segments(0, 0, x, y, col = colors[dend_ave[i,1]])
   }
   
@@ -85,8 +90,8 @@ for(k in min: max){
        bty="n", xlab = "", ylab = "", 
        main = paste("Complete Linkage:", k, "cluster", sep = " "), cex.main = 4)
   for(i in 1:nrow(dend_comp)){
-    x <- -5*sin(degrees.to.radians(5*dend_comp[i, 2]))
-    y <- 5*cos(degrees.to.radians(5*dend_comp[i, 2]))
+    x <- -5*sin(degrees.to.radians(increment*dend_ave[i, 2] + starting_angle - increment))
+    y <- 5*cos(degrees.to.radians(increment*dend_ave[i, 2] + starting_angle - increment))
     segments(0, 0, x, y, col = colors[dend_comp[i,1]])
   }
   
@@ -100,8 +105,8 @@ for(k in min: max){
        bty="n", xlab = "", ylab = "", 
        main = paste("Ward's Method:", k, "cluster", sep = " "), cex.main = 4)
   for(i in 1:nrow(dend_ward)){
-    x <- -5*sin(degrees.to.radians(5*dend_ward[i, 2]))
-    y <- 5*cos(degrees.to.radians(5*dend_ward[i, 2]))
+    x <- -5*sin(degrees.to.radians(increment*dend_ave[i, 2] + starting_angle - increment))
+    y <- 5*cos(degrees.to.radians(increment*dend_ave[i, 2] + starting_angle - increment))
     segments(0, 0, x, y, col = colors[dend_ward[i,1]])
   }
 }
