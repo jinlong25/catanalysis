@@ -9,6 +9,8 @@ library("Cairo")
 starting_angle <- 90
 increment <- 360/n_icons
 
+#Define the name of the exported file
+filename <- "star_viz_dendrogram.png"
 
 #Deinfe max/min cluster solution
 min = 2
@@ -20,7 +22,7 @@ columns = 3
 
 #Define variables for the exported grpahic
 #Change the width and height according to the layout
-Cairo(file = paste(path, "star_viz_dendrogram_black.png", sep = ""), type = "png", 
+Cairo(file = paste(path, filename, sep = ""), type = "png", 
       units = "px", width = 2250, height = 3600)
 
 #Partition the drawing device
