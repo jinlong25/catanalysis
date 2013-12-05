@@ -15,7 +15,7 @@
 rm(list=ls())
 
 #Define the name of the experiment
-scenario_name <- "directions_3D_fgr"
+scenario_name <- "landscape dmark 1"
 
 #Define the max number of clusters
 max_cluster <- 5
@@ -28,7 +28,8 @@ max_cluster <- 5
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/red/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/green/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
-path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
+#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
+path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
 
 #Auto-create two subfolders "ism" and "matrices"
 dir.create(paste(path, "ism/", sep=""))
@@ -89,6 +90,9 @@ icon_list_getter <- function(path){
   #Read in icons.csv
   icons <- read.csv(icons_csv, header = F, stringsAsFactors = F)
   
+  #Reorder icon names by icon index
+  icons <- icons[order(icons[, 1]),]
+  
   #Extract the icon names from the table (excluding the path name and file extensions)
   icon_list <- icons[, 2]
   for(i in 1:length(icon_list)){
@@ -100,9 +104,6 @@ icon_list_getter <- function(path){
   #such as gif, jpg, bmp, png. It is okay so far but I rewrote it using regular expression 
   #to auto-locate the extension and then extract the 
   #icon name (without the path or the extension), so it will also work with tiff or jpeg files
-  
-  #Get and sort the icon names alphabetically in ascending order
-  icon_list = sort(icon_list)
   
   #Extract the icon names with file type (e.g. .jpg) for KlipArt
   icon_list_klipart <- icons
@@ -715,7 +716,7 @@ prototype_freq <- function(path){
     prototype <- read.csv(prototype_file, header = F, stringsAsFactors = F)
     for(j in 1:nrow(prototype)){
       if(prototype[j, 4] != ""){
-        freq[prototype[j, 3] + 1, 3] = freq[prototype[j, 3] + 1, 3] + 1
+        freq[as.numeric(prototype[j, 3]) + 1, 3] <- freq[as.numeric(prototype[j, 3]) + 1, 3] + 1
       }
     }
   }
