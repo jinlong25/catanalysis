@@ -15,7 +15,7 @@
 rm(list=ls())
 
 #Define the name of the experiment
-scenario_name <- "landscape dmark 1"
+scenario_name <- "geo terms"
 
 #Define the max number of clusters
 max_cluster <- 5
@@ -29,7 +29,10 @@ max_cluster <- 5
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/green/"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
-path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
+#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
+path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2500 mturk geo terms/"
+
+
 
 #Auto-create two subfolders "ism" and "matrices"
 dir.create(paste(path, "ism/", sep=""))
@@ -473,9 +476,9 @@ cluster_analysis <- function(path, k, title = ""){
   #Jinlong: I'm pretty sure the code above won't work for this function
   
   ###Participants minus osm generates dissimilarity###
-  ave = hclust(method = "average", as.dist(participant_counter(path) - dm))
-  comp = hclust(method = "complete", as.dist(participant_counter(path) - dm))
-  ward = hclust(method = "ward", as.dist(participant_counter(path) - dm))
+  ave <- hclust(method = "average", as.dist(participant_counter(path) - dm))
+  comp <- hclust(method = "complete", as.dist(participant_counter(path) - dm))
+  ward <- hclust(method = "ward", as.dist(participant_counter(path) - dm))
   
   # load code of A2R function
   # Explain what this function is doing!
@@ -500,7 +503,6 @@ cluster_analysis <- function(path, k, title = ""){
   
 }
 
-if(F){
 #Cluster validation
 cluster_validation <- function(path, k, title=""){
 
@@ -576,7 +578,6 @@ cluster_validation <- function(path, k, title=""){
   A2Rplot(ward2, k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 2 Ward's Method",sep=""))
   
   dev.off()
-}
 }
 
 ##Overview
@@ -770,6 +771,8 @@ participant_similarity(path)
 mds <- mdscaling(path)
 
 assignment_getter(path)
+
+cluster_validation(path, 3, "geo terms")
 
 # generate output file for icon viewer containing mds results and prototype frequencies
 mdsc <- cbind(mds,prototypes[3])
