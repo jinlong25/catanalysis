@@ -13,7 +13,7 @@ library(R2HTML)
 path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
 
 #Number of clusters, that is, where to cut the tree
-k = 4
+k = 8
 
 #Participant counter: count the number of participants
 #This is taking from CatAnalysis
@@ -52,7 +52,7 @@ MyHTMLInsertGraph <- function (GraphFileName = "", Caption = "", GraphBorder = 1
 
 #Cluster analysis to obtain cluster membership
 #This could and should be integrated with other cluster analysis code
-d <- read.csv(paste(path, "osm_test.csv", sep = ""), header = F)
+d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
 dm <- as.matrix(d[, -1])
 dimnames(dm) <- list(d[, 1],d[, 1])
 
