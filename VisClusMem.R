@@ -9,7 +9,7 @@ rm(list=ls())
 library(R2HTML)
 
 
-#Experiment folder
+#Experiment folder / test
 path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
 
 #Number of clusters, that is, where to cut the tree
