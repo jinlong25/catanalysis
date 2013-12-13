@@ -716,9 +716,9 @@ prototype_freq <- function(path){
     prototype_file <- paste("./", participant_number, "/", participant_number, "gprototypes.csv", sep = "")
     prototype <- read.csv(prototype_file, header = F, stringsAsFactors = F)
     for(j in 1:nrow(prototype)){
-      if(prototype[j, 4] != ""){
+      #if(prototype[j, 4] != ""){
         freq[as.numeric(prototype[j, 3]) + 1, 3] <- freq[as.numeric(prototype[j, 3]) + 1, 3] + 1
-      }
+      # }
     }
   }
     
