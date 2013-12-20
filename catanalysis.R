@@ -15,10 +15,10 @@
 rm(list=ls())
 
 #Define the name of the experiment
-scenario_name <- "geo terms"
+scenario_name <- "2202"
 
 #Define the max number of clusters
-max_cluster <- 5
+max_cluster <- 9
 
 #Define the path to the experiment folder (with a closing "/" or "\")
 #Note that the path delimiter in Windows is "\" while the path delimiter in Mac in "/"
@@ -30,7 +30,9 @@ max_cluster <- 5
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
-path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2500 mturk geo terms/"
+#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2500 mturk geo terms/"
+path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2202 mturk landscape dmark 1/"
+
 
 
 
@@ -612,7 +614,7 @@ overview_getter <- function(path){
   title(paste("Average age: ", aveage, " (max: ", max, ", min: ", min, ")", sep=""),line=-22,cex=20)
   boxplot(data[,14],
           horizontal=TRUE, 
-          notch = TRUE,  # Notches for CI for median
+          notch = FALSE,  # Notches for CI for median
           col = "slategray3",
           boxwex = 0.5,  # Width of box as proportion of original
           whisklty = 1,  # Whisker line type; 1 = solid line
@@ -744,7 +746,39 @@ mdscaling <- function(path){
   dev.off()
   return(mds)
 }
+
+#Numerical cluster validation
+#cluster validation is accomplished by comparing cluster membership
+#for a certain number of clusters across different clustering methods (ave, comp, ward)
+#Parameters: path of experiment and k (maximum number of clusters)
+#There could be an issue as cluster membership is a number that may not be the same
+#across cluster method!!!
+NumClusVal <- function(path, k){
+  #read in matrix and column/row names
+  d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+  dm <- as.matrix(d[, -1])
+  dimnames(dm) <- list(d[, 1],d[, 1])
   
+  ###Participants minus osm generates dissimilarity###
+  ave = hclust(method = "average", as.dist(participant_counter(path) - dm))
+  comp = hclust(method = "complete", as.dist(participant_counter(path) - dm))
+  ward = hclust(method = "ward", as.dist(participant_counter(path) - dm))
+  #cluster validation
+  cut.Results = data.frame() #create empty data frame
+  for (i in 2:k){
+    cut.ave <- as.data.frame(cutree(ave, i))
+    cut.comp <- as.data.frame(cutree(comp, i))
+    cut.ward <- as.data.frame(cutree(ward, i))
+    cut.Results <- as.data.frame(cbind(cut.ave[,1], cut.comp[,1], cut.ward[,1]))
+    colnames(cut.Results) <- c(paste("ave", sep=""), paste("comp", sep=""), paste("ward", sep=""))
+    cut.Results$Equal[cut.Results$ave == cut.Results$comp & cut.Results$comp == cut.Results$ward] <- "Equal"
+    cut.Results$Equal[cut.Results$ave != cut.Results$comp | cut.Results$comp != cut.Results$ward] <- "Dif"
+    rownames(cut.Results) <- rownames(cut.ave)
+    write.csv(cut.Results, file=paste(path, "cluVal", i, ".csv", sep = ""))
+  } 
+}
+
+
 #exe
 n_icons <- icon_counter(path)
 
