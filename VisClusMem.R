@@ -10,7 +10,7 @@ library(R2HTML)
 
 
 #Experiment folder / test
-path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
+path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2202 mturk landscape dmark 1/"
 
 #Number of clusters, that is, where to cut the tree
 k = 8
@@ -73,7 +73,7 @@ for (i in 1:k) {
   #Store all the row names (image names) of that cluster in iconNames
   iconNames <- rownames(clusterMembers)
   #define output file using the cluster number as a name variable
-  output <- paste(k, "_cluster", i, ".html", sep = "")
+  output <- paste(k, "_clusWard", i, ".html", sep = "")
   HTMLoutput=file.path(path, output)
   #specify where the icons/images are located at
   iconPath <- paste("icons/", sep = "")
