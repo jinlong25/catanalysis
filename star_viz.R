@@ -15,7 +15,7 @@ starting_angle <- 0
 increment <- 360/n_icons
 
 #Define the name of the exported file
-filename <- "star_viz_dendrogram.png"
+filename <- "star_viz.png"
 
 ##Define 16 colors
 colors <- c("firebrick2", "dodgerblue4", "darkgreen", "darkorange2",

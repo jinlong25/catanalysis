@@ -15,13 +15,9 @@
 rm(list=ls())
 
 #Define the name of the experiment
-scenario_name <- "2202"
-
-#Define the max number of clusters
-max_cluster <- 9
+scenario_name <- "birdseye"
 
 #Define the path to the experiment folder (with a closing "/" or "\")
-#Note that the path delimiter in Windows is "\" while the path delimiter in Mac in "/"
 #path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/"
@@ -31,10 +27,11 @@ max_cluster <- 9
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2500 mturk geo terms/"
-path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2202 mturk landscape dmark 1/"
+#path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2202 mturk landscape dmark 1/"
+path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1200 mturk planes birdseye/analysis/birdseye_30/"
 
-
-
+#Define the max number of clusters
+max_cluster <- 9
 
 #Auto-create two subfolders "ism" and "matrices"
 dir.create(paste(path, "ism/", sep=""))
