@@ -124,9 +124,9 @@ for(i in 1:length(files)){
 #Reorder all assignment.csv by their membership from cluster analysis
 ordered_container <- list()
 i <- 1
-while(i <= np){
+while(i <= participant_cluster){
   for(alist in overall_container){
-    if(alist[1,5] == i){
+    if(alist[1, 5] == i){
       ordered_container <- c(ordered_container, list(alist))
     }
   }
@@ -135,7 +135,10 @@ while(i <= np){
 
 #Start a new canvas with Cairo(function)
 #The width/height of the graphic can be changed via "width" and "height" parameter
-Cairo(file = paste(path, filename, sep = ""), type = "png", units = "px", width = nc * 300 + 200, height = nr * 300 + 300, dpi = 1200)
+Cairo(file = paste(path, filename, sep = ""), 
+      type = "png", units = "px", 
+      width = nc * 300 + 200, height = nr * 300 + 300, 
+      dpi = 1200)
 
 #Partition the canvas using nr and nc defined previously
 par(mfrow = c(nr, nc))
