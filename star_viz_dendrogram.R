@@ -21,7 +21,7 @@ colors <- c("firebrick2", "dodgerblue4", "darkgreen", "darkorange2",
             "chocolate4", "black", "deeppink3", "darkmagenta",
             "blueviolet", "darkslategrey", "saddlebrown", "indianred1")
 
-#Define the layout of the output figure (nr * nc >= total number of participants)
+#Define the layout of the output figure
 nr <- max - min + 1
 nc <- 3
 
