@@ -15,7 +15,7 @@
 rm(list=ls())
 
 #Define the name of the experiment
-scenario_name <- "birdseye"
+scenario_name <- "1200_birdseye_red"
 
 #Define the path to the experiment folder (with a closing "/" or "\")
 #path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
@@ -26,9 +26,9 @@ scenario_name <- "birdseye"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
-#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2500 mturk geo terms/"
-#path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2202 mturk landscape dmark 1/"
-path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1200 mturk planes birdseye/analysis/birdseye_30/"
+path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/birdseye/red/"
+#path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/sideview/black/"
+#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1200 mturk planes birdseye/analysis/birdseye_30/"
 
 #Define the max number of clusters
 max_cluster <- 9
