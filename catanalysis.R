@@ -316,13 +316,13 @@ participant_info <- function(path){
     participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
     
     #Construct the full file name for assignment.csv file
-    participant_assignment <- paste("./", participant_number, "/", participant_number, 
-                                    "assignment.csv", sep = "")
+    participant_groups <- paste("./", participant_number, "/", participant_number, 
+                                    "gprototypes.csv", sep = "")
     
-    groups <- read.delim(participant_assignment, header = F, sep = ",", stringsAsFactors = F)
+    groups <- read.delim(participant_groupst, header = F, sep = ",", stringsAsFactors = F)
     
     #Get the maxim group index and convert it to the # of groups created
-    groups <- groups[nrow(groups), 2] + 1
+    groups <- nrow(groups)
     
     #Append the # of groups created to the vector "groups_created"
     groups_created <- append(groups_created, groups)
