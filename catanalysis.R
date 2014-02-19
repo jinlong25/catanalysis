@@ -321,7 +321,7 @@ participant_info <- function(path){
     
     groups <- read.delim(participant_groups, header = F, sep = ",", stringsAsFactors = F)
     
-    #Get the maxim group index and convert it to the # of groups created
+    # Count the number of rows in the prototype file and convert it to the # of groups created
     groups <- nrow(groups)
     
     #Append the # of groups created to the vector "groups_created"
