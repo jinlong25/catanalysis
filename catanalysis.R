@@ -30,6 +30,11 @@ path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Comput
 #path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/sideview/black/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1200 mturk planes birdseye/analysis/birdseye_30/"
 
+##Checks if "/" exists after path. If not, one is added
+if(substr(path, nchar(path), nchar(path)) != "/"){
+  path <- paste(path, "/", sep = "")
+}
+
 #Define the max number of clusters
 max_cluster <- 9
 
