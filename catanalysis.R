@@ -319,7 +319,7 @@ participant_info <- function(path){
     participant_groups <- paste("./", participant_number, "/", participant_number, 
                                     "gprototypes.csv", sep = "")
     
-    groups <- read.delim(participant_groupst, header = F, sep = ",", stringsAsFactors = F)
+    groups <- read.delim(participant_groups, header = F, sep = ",", stringsAsFactors = F)
     
     #Get the maxim group index and convert it to the # of groups created
     groups <- nrow(groups)
