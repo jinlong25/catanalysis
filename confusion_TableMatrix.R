@@ -12,7 +12,7 @@ require(Cairo)
 
 ##Define path, making sure there is a folder named 'zip' that 
 ##holds the zipped files in the last folder in the path
-path <- 'C:/Users/Sparks/Desktop/alex/Projects/CLP/catscan/participant_results/nonfree/2_17'
+path <- 'C:/Users/Sparks/Dropbox/Catscan experiments/Experiments/2152 mturk landCoverClass-NonFree'
 
 
 #####END user input#####
@@ -198,6 +198,7 @@ for(p in files){
   confusion_table_DF <- confusion_table_DF[,-1]
   rownames(confusion_table_DF) = rownames(confusion_table)
   
+  
   for(i in 1:10){
     if(rownames(confusion_table_DF)[i] != unique(colnames(confusion_table_DF)[i])){
       newRowNames <- c(rownames(confusion_table_DF)[1:i-1], unique(colnames(confusion_table_DF)[i]), rownames(confusion_table_DF)[i:nrow(confusion_table_DF)])
@@ -242,12 +243,15 @@ rownames(confusion_perc) = c('BA','CC','dL','dO','EW','FO',
 
 ####---------------Confusion Percentages END---------------####
 
+#transpose
+confusion_table_master <- as.matrix(confusion_table_master)
+confusion_table_master <- t(confusion_table_master)
+confusion_perc <- t(confusion_perc)
 
-write.table(confusion_perc, file="ConfusionMatrixPerc.csv", sep=',')
-write.table(confusion_table_master, file="ConfusionMatrixTable.csv", sep=',')
+
+write.table(confusion_perc, file="ConfusionMatrixPerc2152.csv", sep=',')
+write.table(confusion_table_master, file="ConfusionMatrixTable2152.csv", sep=',')
 
 
 
 ####----------Chi-Squared Test----------####
-confusion_matrix_chi <- as.matrix(confusion_table_master)
-chisq.test(confusion_matrix_chi, correct=F)
