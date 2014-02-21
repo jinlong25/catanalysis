@@ -12,8 +12,8 @@ require(Cairo)
 
 ##Define path, making sure there is a folder named 'zip' that 
 ##holds the zipped files in the last folder in the path
-path <- 'C:/Users/Sparks/Desktop/alex/Projects/CLP/catscan/participant_results/nonfree/2_17'
-
+#path <- 'C:/Users/Sparks/Desktop/alex/Projects/CLP/catscan/participant_results/nonfree/2_17'
+path <- '/Users/jow/Dropbox/Catscan experiments/Experiments/2152 mturk landCoverClass-NonFree'
 
 #####END user input#####
 
@@ -121,6 +121,10 @@ rownames(confusion_table_master) = c('BA','CC','dL','dO','EW','FO',
                                      'GS','OW','PH','SS','WW')
 
 
+icon_confusion_matrix  <- matrix(0, 77, 11)
+
+colnames(icon_confusion_matrix) = c('BA','CC','dL','dO','EW','FO',
+                                     'GS','OW','PH','SS','WW')
 
 ##Begins for loop to loop through participants' zip folders
 for(p in files){
@@ -173,7 +177,19 @@ for(p in files){
   ##Adds the class order to data frame
   d <- cbind(d, icon_order_result)
   
+  ####----------------CONFUSION OF ICONS----------------####
+
+
   
+  for(x in 1:nrow(d)) {
+    if (as.character(d[x,4]) == as.character(d[x,5])) {
+      icon_confusion_matrix[d[x,3],d[x,2]] <- icon_confusion_matrix[d[x,3],d[x,2]] - 1
+     } else {
+       icon_confusion_matrix[d[x,3],d[x,2]] <- icon_confusion_matrix[d[x,3],d[x,2]] + 1
+     }
+  }
+  print(icon_confusion_matrix)
+
   ####----------------CONFUSION MATRIX STARTS----------------####
   actual <- d[,4]
   predicted <- d[,5]
@@ -251,3 +267,7 @@ write.table(confusion_table_master, file="ConfusionMatrixTable.csv", sep=',')
 ####----------Chi-Squared Test----------####
 confusion_matrix_chi <- as.matrix(confusion_table_master)
 chisq.test(confusion_matrix_chi, correct=F)
+
+
+
+
