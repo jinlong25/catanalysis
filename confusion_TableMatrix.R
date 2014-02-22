@@ -15,7 +15,7 @@ require(Cairo)
 path <- '/Users/jow/Dropbox/Catscan experiments/Experiments/2152 mturk landCoverClass-NonFree'
 #path <- '/Users/jow/Dropbox/Catscan experiments/Experiments/2151 mturk landCoverClassification-NonFree'
 #path <- 'C:/Users/Sparks/Dropbox/Catscan experiments/Experiments/2151 mturk landCoverClassification-NonFree'
-
+path <- 'C:/Users/Sparks/Desktop/test'
 
 #####END user input#####
 
@@ -312,10 +312,10 @@ rownames(confusion_perc) = c('BA','CC','dL','dO','EW','FO',
 
 ####---------------Confusion Percentages END---------------####
 
-#transpose
-confusion_table_master <- as.matrix(confusion_table_master)
-confusion_table_master <- t(confusion_table_master)
-confusion_perc <- t(confusion_perc)
+#transpose, NOW NOT NEEDED
+#confusion_table_master <- as.matrix(confusion_table_master)
+#confusion_table_master <- t(confusion_table_master)
+#confusion_perc <- t(confusion_perc)
 
 
 write.table(confusion_perc, file="ConfusionMatrixPerc2152.csv", sep=',')
