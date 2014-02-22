@@ -186,9 +186,9 @@ for(p in files){
   
   for(x in 1:nrow(d)) {
     if (as.character(d[x,4]) == as.character(d[x,5])) {
-      icon_confusion_matrix[d[x,3],d[x,2]] <- icon_confusion_matrix[d[x,3],d[x,2]] - 1
+      icon_confusion_matrix[d[x,3]+1,d[x,2]+1] <- icon_confusion_matrix[d[x,3]+1,d[x,2]+1] - 1
      } else {
-       icon_confusion_matrix[d[x,3],d[x,2]] <- icon_confusion_matrix[d[x,3],d[x,2]] + 1
+       icon_confusion_matrix[d[x,3]+1,d[x,2]+1] <- icon_confusion_matrix[d[x,3]+1,d[x,2]+1] + 1
      }
   }
   #print(icon_confusion_matrix)
