@@ -13,7 +13,8 @@ require(Cairo)
 ##Define path, making sure there is a folder named 'zip' that 
 ##holds the zipped files in the last folder in the path
 path <- '/Users/jow/Dropbox/Catscan experiments/Experiments/2152 mturk landCoverClass-NonFree'
-#path <- 'C:/Users/Sparks/Dropbox/Catscan experiments/Experiments/2152 mturk landCoverClass-NonFree'
+#path <- '/Users/jow/Dropbox/Catscan experiments/Experiments/2151 mturk landCoverClassification-NonFree'
+#path <- 'C:/Users/Sparks/Dropbox/Catscan experiments/Experiments/2151 mturk landCoverClassification-NonFree'
 
 
 #####END user input#####
@@ -129,6 +130,14 @@ colnames(icon_confusion_matrix) = c('BA','CC','dL','dO','EW','FO',
 
 rownames(icon_confusion_matrix) <- all_icons
 
+#Create a dataframe to store the prototype frequency
+freq <- data.frame(icon = icon_list_getter(path), 
+                     icon_index = 0: (length(icon_list_getter(path))-1), 
+                     count = rep(0, length(icon_list_getter(path))),
+                     wrong = rep(0, length(icon_list_getter(path))),
+                     correct = rep(0, length(icon_list_getter(path)))
+                    )
+
 ##Begins for loop to loop through participants' zip folders
 for(p in files){
   ##Unzippes participant folder
@@ -195,6 +204,35 @@ for(p in files){
   }
   #print(icon_confusion_matrix)
 
+  ####----------------PROTOTYPE CONFUSION----------------####
+  
+   
+  for (x in participant) {
+    if (substr(x, nchar(x) - 14, nchar(x)) == "gprototypes.csv") {
+      check = x
+      break
+    }
+  }
+  
+  print(check)
+    prototype <- read.csv(check, header = F, stringsAsFactors = F)
+    for(j in 1:nrow(prototype)){
+      #if(prototype[j, 4] != ""){
+        freq[as.numeric(prototype[j, 3]) + 1, 3] <- freq[as.numeric(prototype[j, 3]) + 1, 3] + 1
+
+        #print(as.numeric(prototype[j, 3]))
+        #print(character(d[as.numeric(prototype[j, 3]),4]))
+        #print(as.character(d[as.numeric(prototype[j, 3]),5]))
+        
+        if (as.character(d[as.numeric(prototype[j, 3])+1,4]) == as.character(d[as.numeric(prototype[j, 3])+1,5])) {
+          freq[as.numeric(prototype[j, 3]) + 1, 5] <- freq[as.numeric(prototype[j, 3]) + 1, 5] + 1
+        } else {
+          freq[as.numeric(prototype[j, 3]) + 1, 4] <- freq[as.numeric(prototype[j, 3]) + 1, 4] + 1
+        }
+      # }
+    }
+  
+
   ####----------------CONFUSION MATRIX STARTS----------------####
   actual <- d[,4]
   predicted <- d[,5]
@@ -244,6 +282,12 @@ for(p in files){
 write.table(icon_confusion_matrix, file="IconConfusionMatrix2152.csv", sep=',')
 
 
+####--------------Write prototype info----------####
+
+write.table(freq, file="prototype_with_confusion.csv", sep = ",")
+
+
+
 ####---------------Confusion Percentages---------------####
 
 ##create empty matrix
@@ -280,3 +324,13 @@ write.table(confusion_table_master, file="ConfusionMatrixTable2152.csv", sep=','
 
 
 ####----------Chi-Squared Test----------####
+
+
+
+
+####----------Chi-Squared Test----------####
+
+
+  
+ 
+    
