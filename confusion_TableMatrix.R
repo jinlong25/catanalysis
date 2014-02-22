@@ -122,12 +122,12 @@ rownames(confusion_table_master) = c('BA','CC','dL','dO','EW','FO',
                                      'GS','OW','PH','SS','WW')
 
 
-icon_confusion_matrix  <- matrix(0, 77, 11)
+icon_confusion_matrix  <- matrix(0, 77, 13)
 
 colnames(icon_confusion_matrix) = c('BA','CC','dL','dO','EW','FO',
-                                     'GS','OW','PH','SS','WW')
+                                     'GS','OW','PH','SS','WW','wrong group','correct group')
 
-rownames(icon_confusion_matrix) <- c(0:76)
+rownames(icon_confusion_matrix) <- all_icons
 
 ##Begins for loop to loop through participants' zip folders
 for(p in files){
@@ -187,8 +187,10 @@ for(p in files){
   for(x in 1:nrow(d)) {
     if (as.character(d[x,4]) == as.character(d[x,5])) {
       icon_confusion_matrix[d[x,3]+1,d[x,2]+1] <- icon_confusion_matrix[d[x,3]+1,d[x,2]+1] - 1
+      icon_confusion_matrix[d[x,3]+1,13] <- icon_confusion_matrix[d[x,3]+1,13] + 1
      } else {
        icon_confusion_matrix[d[x,3]+1,d[x,2]+1] <- icon_confusion_matrix[d[x,3]+1,d[x,2]+1] + 1
+        icon_confusion_matrix[d[x,3]+1,12] <- icon_confusion_matrix[d[x,3]+1,12] + 1
      }
   }
   #print(icon_confusion_matrix)
