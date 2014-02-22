@@ -12,8 +12,8 @@ require(Cairo)
 
 ##Define path, making sure there is a folder named 'zip' that 
 ##holds the zipped files in the last folder in the path
-#path <- '/Users/jow/Dropbox/Catscan experiments/Experiments/2152 mturk landCoverClass-NonFree'
-path <- 'C:/Users/Sparks/Dropbox/Catscan experiments/Experiments/2152 mturk landCoverClass-NonFree'
+path <- '/Users/jow/Dropbox/Catscan experiments/Experiments/2152 mturk landCoverClass-NonFree'
+#path <- 'C:/Users/Sparks/Dropbox/Catscan experiments/Experiments/2152 mturk landCoverClass-NonFree'
 
 
 #####END user input#####
@@ -127,6 +127,8 @@ icon_confusion_matrix  <- matrix(0, 77, 11)
 colnames(icon_confusion_matrix) = c('BA','CC','dL','dO','EW','FO',
                                      'GS','OW','PH','SS','WW')
 
+rownames(icon_confusion_matrix) <- c(0:76)
+
 ##Begins for loop to loop through participants' zip folders
 for(p in files){
   ##Unzippes participant folder
@@ -189,7 +191,7 @@ for(p in files){
        icon_confusion_matrix[d[x,3],d[x,2]] <- icon_confusion_matrix[d[x,3],d[x,2]] + 1
      }
   }
-  print(icon_confusion_matrix)
+  #print(icon_confusion_matrix)
 
   ####----------------CONFUSION MATRIX STARTS----------------####
   actual <- d[,4]
@@ -234,6 +236,10 @@ for(p in files){
   print(p)
   
 }
+
+####--------------Write icon confusion matrix----------####
+
+write.table(icon_confusion_matrix, file="IconConfusionMatrix2152.csv", sep=',')
 
 
 ####---------------Confusion Percentages---------------####
