@@ -15,7 +15,7 @@
 rm(list=ls())
 
 #Define the name of the experiment
-scenario_name <- "1200_birdseye_red"
+scenario_name <- "1208-1210"
 
 #Define the path to the experiment folder (with a closing "/" or "\")
 #path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
@@ -26,7 +26,8 @@ scenario_name <- "1200_birdseye_red"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
-path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/birdseye/red/"
+path <- "/Users/jow/Dropbox/SPatialRelationsExperiment/data new Feb27/1208-1210 combined/"
+#path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/birdseye/red/"
 #path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/sideview/black/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1200 mturk planes birdseye/analysis/birdseye_30/"
 
@@ -693,11 +694,15 @@ participant_similarity <- function(path){
   dend <- as.dendrogram(cluster)
   
   #Export the dendrogram as a tiff file
-  tiff(filename = paste(path, "participant_simiarlity.tiff", sep =" "),
+  tiff(filename = paste(path, "participant_similarity.tiff", sep =""),
        width = 2000, height=2000, units="px",
        pointsize=5, compression = "none", bg = "white", res = 600)
   plot(dend)
   dev.off()
+
+  #Create overview table showing cluster membership for all possible numbers of clusters
+  tree = cutree(cluster, k = c(1:length(isms)))
+  write.csv(tree, file=paste(path, "participant_similarity_ward_clusters", ".csv", sep = ""))
 }
 
 
