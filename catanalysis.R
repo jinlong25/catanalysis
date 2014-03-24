@@ -15,7 +15,7 @@
 rm(list=ls())
 
 #Define the name of the experiment
-scenario_name <- "1208-1210"
+scenario_name <- "2202"
 
 #Define the path to the experiment folder (with a closing "/" or "\")
 #path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
@@ -26,7 +26,7 @@ scenario_name <- "1208-1210"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
-path <- "/Users/jow/Dropbox/SPatialRelationsExperiment/data new Feb27/1208-1210 combined/"
+path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2202 mturk landscape dmark 1"
 #path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/birdseye/red/"
 #path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/sideview/black/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1200 mturk planes birdseye/analysis/birdseye_30/"
@@ -472,8 +472,32 @@ cluster_heatmap <- function(path){
 }
 
 
-#Cluster analysis
-cluster_analysis <- function(path, k, title = ""){
+#General cluster analysis
+general_cluster_analysis  <- function(path) {
+	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+	dm <- as.matrix(d[, -1])
+	dimnames(dm) <- list(d[, 1],d[, 1])
+	#Old code: dm = as.matrix(d)
+	#Jinlong: I'm pretty sure the code above won't work for this function
+	
+	###Participants minus osm generates dissimilarity###
+	ave <- hclust(method = "average", as.dist(participant_counter(path) - dm))
+	comp <- hclust(method = "complete", as.dist(participant_counter(path) - dm))
+	ward <- hclust(method = "ward", as.dist(participant_counter(path) - dm))
+	
+	# compute and save cophenectic matrices
+
+	coph_ave <- as.matrix(cophenetic(ave)) 
+	coph_comp <- as.matrix(cophenetic(comp)) 
+	coph_ward <- as.matrix(cophenetic(ward)) 
+	
+	write.table(coph_ave,file = paste(path, "coph_matrix_ave.mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
+	write.table(coph_comp,file = paste(path, "coph_matrix_comp.mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
+	write.table(coph_ward,file = paste(path, "coph_matrix_ward.mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
+}
+	
+#Detailed cluster analysis
+detailed_cluster_analysis <- function(path, k, title = ""){
   d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
   dm <- as.matrix(d[, -1])
   dimnames(dm) <- list(d[, 1],d[, 1])
@@ -801,6 +825,8 @@ osm_viz(path)
 
 cluster_heatmap(path)
 
+general_cluster_analysis(path)
+
 participant_info(path)
 
 overview_getter(path)
@@ -822,5 +848,5 @@ write.table(mdsc, file = paste(path, "mds.txt", sep = ""), sep = " ", quote = FA
 
 ###Change the number here to create colored-dendrograms at different solutions
 for(i in 2: max_cluster){
-  cluster_analysis(path, i, scenario_name)
+  detailed_cluster_analysis(path, i, scenario_name)
 }
