@@ -3,6 +3,7 @@
 ##################################################################################
 
 # Numerical cluster validation
+# Author: Alexander Klippel
 # cluster validation is accomplished by comparing cluster membership
 # for a certain number of clusters across different clustering methods (ave, comp, ward)
 # Parameters: path of experiment and k (maximum number of clusters)
@@ -41,6 +42,7 @@ numClusVal <- function(path, k){
 # print standard dendrograms
 # input variable: path
 # OSM needs to be present
+# Author: Alexander Klippel
 stanDen <- function(path)
   {
   d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
@@ -69,9 +71,10 @@ stanDen <- function(path)
 
 
 ################################################33
-## ploting individual "heatmaps" as black/white images
-## results are stored in folder 'indISM'
-## input: path
+# ploting individual "heatmaps" as black/white images
+# results are stored in folder 'indISM'
+# input: path
+# Author: Alexander Klippel
 visIndISM <- function(path)
   {
   #read in all ISMs and store as a list
@@ -112,9 +115,10 @@ for (i in indISM) {
 
 #############################################################################################
 
-# #Visualizing participant similarities by groups
-## Provide path and where to cut the dendrogram
-### TODO: np needs to be set!
+# Visualizing participant similarities by groups
+# Provide path and where to cut the dendrogram
+# TODO: np needs to be set!
+# Author: Alexander Klippel
 part.sim.group.vis <- function(path, np, k){
   #List all ISMs
   isms <- list.files(paste(path, "ism/", sep = ""))
@@ -173,10 +177,10 @@ part.sim.group.vis <- function(path, np, k){
 
 ##################################################################################################
 
-## Comparing results from 2 experiments
-
-### Comparing two osm
-# Difference between them
+# Comparing results from 2 experiments
+# Comparing two osm
+# Calculating difference between them
+# Author: Alexander Klippel
 dif2Osm <- function(path1,path2)
   {
   # load first OSM
