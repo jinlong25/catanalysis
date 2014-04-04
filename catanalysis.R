@@ -871,18 +871,19 @@ participant_similarity <- function(path){
 	#Calculate participant similarity matrices of all pairs of partcipants based on the hamming distance of their ISMs (dm) and Jaccard index (dm_jaccard)
 	dm <- matrix(0, ncol = np, nrow = np)
 	dm_jac <- matrix(0, ncol = np, nrow = np)
+	dm_rand <- matrix(0, ncol = np, nrow = np)
 	for (i in 1: np){
 		for (j in 1: np){
 			dm[i,j] <- sum(abs(all_isms[[i]] - all_isms[[j]]))
-
-			ish_i <- lower.tri(all_isms[[i]], diag = FALSE)
-			ish_j <- lower.tri(all_isms[[j]], diag = FALSE)
 			
 			m11 <- sum(all_isms[[i]] * all_isms[[j]])
 			m01 <- sum(abs(1-all_isms[[i]]) * all_isms[[j]])
 			m10 <- sum(all_isms[[i]] * abs(1-all_isms[[j]]))
 			m00 <- sum(abs(1-all_isms[[i]]) * abs(1-all_isms[[j]]))
+			
 			dm_jac[i,j] <- m11 / (m01+m10+m11) 
+			
+			dm_rand[i,j] <- (m11 + m00) / (m01+m10+m00+m11)
 		}
 	}
 	
@@ -896,6 +897,10 @@ participant_similarity <- function(path){
 	#Assign participants numbers as the row&column names of the participant similarity matrix (dm)
 	colnames(dm) <- names
 	rownames(dm) <- names
+	colnames(dm_jac) <- names
+	rownames(dm_jac) <- names
+	colnames(dm_rand) <- names
+	rownames(dm_rand) <- names
 	
 	#Perform cluster analysis based on participant similarity matrix using Ward's method and construct a dendrogram
 	cluster <- hclust(method = "ward", as.dist(dm))
@@ -905,15 +910,21 @@ participant_similarity <- function(path){
 	
 	#Export the dendrogram as a tiff file
 	tiff(filename = paste(path, "participant_similarity.tiff", sep =""),
-			width = 2000, height=2000, units="px",
-			pointsize=5, compression = "none", bg = "white", res = 600)
+			width = 4000, height=4000, units="px",
+			pointsize=5, compression = "none", bg = "white", res = 400)
 	plot(dend)
 	dev.off()
 	
 	tiff(filename = paste(path, "participant_similarity_jac.tiff", sep =""),
-			width = 2000, height=2000, units="px",
-			pointsize=5, compression = "none", bg = "white", res = 600)
+			width = 4000, height=4000, units="px",
+			pointsize=5, compression = "none", bg = "white", res = 400)
 	plot(dend_jac)
+	dev.off()
+	
+	tiff(filename = paste(path, "participant_similarity_rand.tiff", sep =""),
+			width = 4000, height=4000, units="px",
+			pointsize=5, compression = "none", bg = "white", res = 400)
+	plot(dend_rand)
 	dev.off()
 	
 	#Create overview table showing cluster membership for all possible numbers of clusters
@@ -940,10 +951,12 @@ prototype_freq <- function(path){
 		participant_number <- substring(p, 1, nchar(p) - 4)
 		prototype_file <- paste("./", participant_number, "/", substring(p,1,8), "gprototypes.csv", sep = "")
 		prototype <- read.csv(prototype_file, header = F, stringsAsFactors = F)
-		for(j in 1:nrow(prototype)){
-			#if(prototype[j, 4] != ""){
-			freq[as.numeric(prototype[j, 3]) + 1, 3] <- freq[as.numeric(prototype[j, 3]) + 1, 3] + 1
-			# }
+		prev <- -1 # workaround to deal with old prototype files
+		for(j in 1:nrow(prototype)) {
+			if(ncol(prototype) < 4 || (!is.na(prototype[j, 2]) && !is.na(prototype[j, 3]) && !is.na(as.numeric(as.numeric(prototype[j, 3]))) && prototype[j, 2] != prev)){
+				prev <- as.numeric(prototype[j, 2])
+				freq[as.numeric(prototype[j, 3]) + 1, 3] <- freq[as.numeric(prototype[j, 3]) + 1, 3] + 1
+			}
 		}
 	}
 	
