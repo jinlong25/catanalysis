@@ -99,6 +99,8 @@ visIndISM <- function(path)
 indISM <- as.list(list.files(paste(path,"ism/",sep="")))
 dir.create(paste(path, "indISM-reordered/", sep=""))
 indISM.Path <- paste(path, "indISM-reordered/", sep="")
+#read in file names with new order
+my.names <- read.csv((paste(path, "newNameOrder.csv", sep = "")), header = TRUE)
 #iterate through the list and plot each matrix using 'grid.raster'
 #individusal images are stored as png files
 for (i in indISM) {
