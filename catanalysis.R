@@ -560,32 +560,26 @@ detailed_cluster_analysis <- function(path, k, title = ""){
 
 #Creates a sample of participants of size sample_size and computes the hclust objects and cophenetic matrices for this sample.
 #The return value is a 6 element list (hclust_ave,coph_ave,hclust_comp,coph_comp,hclust_ward,coph_ward)
-sampling_run <- function(path, sample_size) {
+sampling_run <- function(path, ism_list, sample_size) {
 	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
 	
 	#Construct the zip folder path and list all zip files
-	zip_path <- paste(path, "zip/", sep = "")
-	files <- list.files(zip_path)
+	ism_path <- paste(path, "ism/", sep = "")
+	files <- ism_list
 	
 	#Initialize OSM
 	osm <- matrix(0,nrow(d),nrow(d))
 	
 	#create random sample numbers
-	r <- sample(participant_counter(path), size=sample_size, replace=FALSE)
+	r <- sample(length(ism_list), size=sample_size, replace=FALSE)
 	
 	#create OSM for sample
 	for (i in 1:sample_size) {
-		#Unzip the zip file from the 1st participant
-		participant <- unzip(paste(zip_path, files[r[i]], sep =""))
-		
-		#Get the participant number for the first participant
-		participant_number <- substring(files[r[i]], 1, nchar(files[r[i]]) - 4)
-		
-		matrix_i_name <- paste("./", participant_number, "/", substring(files[r[i]],1,8), ".mtrx", sep = "")
+		matrix_i_name <- files[r[i]]
 		#print(paste("reading",matrix_i_name))
 		
 		#Read in the ISM from a participant and exclude the non-ism info from the .mtrx file
-		matrix_i <- read.delim(matrix_i_name, header = F, sep = " ", stringsAsFactors = F)
+		matrix_i <- read.delim(paste(ism_path,matrix_i_name,sep=""), header = F, sep = " ", stringsAsFactors = F)
 		matrix_i <- data.matrix(matrix_i[1:icon_counter(path), ])
 		
 		osm <- osm + matrix_i
@@ -607,7 +601,7 @@ sampling_run <- function(path, sample_size) {
 #Perform a complete sampling experiment in which an average cophenetic matrix for samples of participants is compared
 #to that of the entire set of participnats. The number of trials is given by paramter 'trials' and a sample size 
 #of 'sample_size' 
-cophenetic_sampling <- function(path, trials, sample_size) {
+cophenetic_sampling <- function(path, ism_list,trials, sample_size) {
 	# read overall osm
 	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
 	dm <- as.matrix(d[, -1])
@@ -624,7 +618,7 @@ cophenetic_sampling <- function(path, trials, sample_size) {
 	
 	#sample and sum up the cophenetic matrices for different clustering methods
 	for (i in 1:trials) {
-		result <- sampling_run(path,sample_size)
+		result <- sampling_run(path, ism_list, sample_size)
 		coph_ave_total <- coph_ave_total + result[[2]]
 		coph_comp_total <- coph_comp_total + result[[4]]
 		coph_ward_total <- coph_ward_total + result[[6]]
@@ -653,12 +647,14 @@ cophenetic_sampling <- function(path, trials, sample_size) {
 
 #Perform complete sample experiments for deviations of clusterings resulting from different methods using Jaccard's index
 #Parameters are:
+#output_name: name of output file without extension
+#ism_list: vector of .mtrx files from which to sample
 #trials: number of runs averaged per sample size and cluster number
 #sample_size_start: smallest sample size to be used
 #sample_size_end: largest sample size to be used
 #n_cluster_start: smallest number of clusters to used
 #n_cluster_end: largest number of clusters to used
-index_sampling <- function(path, trials, sample_size_start, sample_size_end, n_cluster_start, n_cluster_end) {
+index_sampling <- function(path, ism_list, output_name, trials, sample_size_start, sample_size_end, n_cluster_start, n_cluster_end) {
 	
 	# set up data frame for results
 	result_df <- data.frame(row_names=c("sample size",c(sample_size_start:sample_size_end)),stringsAsFactors=FALSE)
@@ -669,10 +665,10 @@ index_sampling <- function(path, trials, sample_size_start, sample_size_end, n_c
 	# run experiments and enter average Jaccard similarity over all three cluster methods in the data frame
 	for (j in n_cluster_start:n_cluster_end) {
 		for (l in sample_size_start:sample_size_end) {
-			print(paste(((j-1)*l+l) / ((n_cluster_end-n_cluster_start+1) * (sample_size_end-sample_size_start+1))*100,"% done" ))
+			print(paste(((((j-n_cluster_start)*(sample_size_end-sample_size_start+1))+(l-sample-size_start+1)) / (n_cluster_end-n_cluster_start+1) * (sample_size_end-sample_size_start+1))*100,"% done" ))
 			avg <- 0 
 			for (i in 1:trials) {
-				result <- sampling_run(path,l)
+				result <- sampling_run(path,ism_list,l)
 				sim_ave_comp <- cluster_similarity(cutree(result[[1]],k=j),cutree(result[[3]],k=j), similarity = c("jaccard"), method = "independence")
 				sim_ave_ward <- cluster_similarity(cutree(result[[1]],k=j),cutree(result[[5]],k=j), similarity = c("jaccard"), method = "independence")
 				sim_comp_ward <- cluster_similarity(cutree(result[[3]],k=j),cutree(result[[5]],k=j), similarity = c("jaccard"), method = "independence")
@@ -685,11 +681,11 @@ index_sampling <- function(path, trials, sample_size_start, sample_size_end, n_c
 	}
 	
 	# write data frame to file
-	write.table(result_df, file = paste(path, "index_sampling_results.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
+	write.table(result_df, file = paste(path, output_name, ".csv", sep = ""), sep = ",", row.names = F,  col.names = F)
 	
 	# produce plot
 	cols = c("blue","green","red","brown","yellow")
-	png(filename=paste(path,"index_sampling_results.png",sep=""), height=1600, width=1600, bg="white")
+	png(filename=paste(path, output_name, ".png",sep=""), height=1600, width=1600, bg="white")
 	
 	for (i in 1:(n_cluster_end-n_cluster_start+1)) {
 		if (i == 1) {
@@ -905,8 +901,10 @@ participant_similarity <- function(path){
 	#Perform cluster analysis based on participant similarity matrix using Ward's method and construct a dendrogram
 	cluster <- hclust(method = "ward", as.dist(dm))
 	cluster_jac <- hclust(method = "ward", as.dist(dm_jac))
+	cluster_rand <- hclust(method = "ward", as.dist(dm_rand))
 	dend <- as.dendrogram(cluster)
 	dend_jac <- as.dendrogram(cluster_jac)
+	dend_rand <- as.dendrogram(cluster_rand)
 	
 	#Export the dendrogram as a tiff file
 	tiff(filename = paste(path, "participant_similarity.tiff", sep =""),
@@ -1056,7 +1054,7 @@ for(i in 2: max_cluster){
 	detailed_cluster_analysis(path, i, scenario_name)
 }
 
-#cophenetic_sampling(path, 100, 20)
+#cophenetic_sampling(path, list.files(paste(path,"ism/",sep="")),100, 20)
 
-#index_sampling(path, 25, 5, 23, 2, 7)
+#index_sampling(path, list.files(paste(path,"ism/",sep="")), "index_sampling_results", 25, 5, 23, 2, 7)
 
