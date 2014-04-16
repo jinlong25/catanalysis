@@ -26,7 +26,7 @@ scenario_name <- "2500 geoterms"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
-path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2500 mturk geo terms/"
+path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/1200 mturk birdseye/30participants/all/"
 #path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/birdseye/red/"
 #path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/sideview/black/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1200 mturk planes birdseye/analysis/birdseye_30/"
@@ -595,7 +595,7 @@ sampling_run <- function(path, ism_list, sample_size) {
 	coph_comp <- as.matrix(cophenetic(comp)) 
 	coph_ward <- as.matrix(cophenetic(ward)) 
 	
-	return(list(ave,coph_ave,comp,coph_comp,ward,coph_ward))
+	return(list(ave,coph_ave,comp,coph_comp,ward,coph_ward,r))
 }
 
 #Perform a complete sampling experiment in which an average cophenetic matrix for samples of participants is compared
@@ -657,42 +657,99 @@ cophenetic_sampling <- function(path, ism_list,trials, sample_size) {
 index_sampling <- function(path, ism_list, output_name, trials, sample_size_start, sample_size_end, n_cluster_start, n_cluster_end) {
 	
 	# set up data frame for results
-	result_df <- data.frame(row_names=c("sample size",c(sample_size_start:sample_size_end)),stringsAsFactors=FALSE)
+	log <- data.frame(col_names=c("cluster number","sample size","trial","sample","sim ave-comp jac","sim ave-ward jac","sim comp-ward jac", "sim avg diff jac", "sim ave-comp rand", "sim ave-ward rand", "sim comp-ward rand", "sim avg diff rand"),stringsAsFactors=FALSE)
+	
+	result_df_jac <- data.frame(row_names=c("sample size",c(sample_size_start:sample_size_end)),stringsAsFactors=FALSE)
+	result_df_rand <- data.frame(row_names=c("sample size",c(sample_size_start:sample_size_end)),stringsAsFactors=FALSE)
 	for (i in 1:(n_cluster_end-n_cluster_start+1)) {
-		result_df[1,i+1] <- paste("cluster=",n_cluster_start + i - 1,sep="")
+		result_df_jac[1,((i-1)*2)+2] <- paste("cluster=",n_cluster_start + i - 1," avg",sep="")
+		result_df_jac[1,((i-1)*2)+3] <- paste("cluster=",n_cluster_start + i - 1," sd",sep="")
+		result_df_rand[1,((i-1)*2)+2] <- paste("cluster=",n_cluster_start + i - 1," avg",sep="")
+		result_df_rand[1,((i-1)*2)+3] <- paste("cluster=",n_cluster_start + i - 1," sd",sep="")
 	}
 	
 	# run experiments and enter average Jaccard similarity over all three cluster methods in the data frame
+	count <- 1
 	for (j in n_cluster_start:n_cluster_end) {
 		for (l in sample_size_start:sample_size_end) {
-			print(paste(((((j-n_cluster_start)*(sample_size_end-sample_size_start+1))+(l-sample-size_start+1)) / (n_cluster_end-n_cluster_start+1) * (sample_size_end-sample_size_start+1))*100,"% done" ))
-			avg <- 0 
+			print(paste(((((j-n_cluster_start)*(sample_size_end-sample_size_start+1))+(l-sample_size_start+1)) / ((n_cluster_end-n_cluster_start+1) * (sample_size_end-sample_size_start+1)))*100,"% done" ))
+			avg_jac <- 0 
+			sq_jac <- 0
+			avg_rand <- 0 
+			sq_rand <- 0
 			for (i in 1:trials) {
 				result <- sampling_run(path,ism_list,l)
-				sim_ave_comp <- cluster_similarity(cutree(result[[1]],k=j),cutree(result[[3]],k=j), similarity = c("jaccard"), method = "independence")
-				sim_ave_ward <- cluster_similarity(cutree(result[[1]],k=j),cutree(result[[5]],k=j), similarity = c("jaccard"), method = "independence")
-				sim_comp_ward <- cluster_similarity(cutree(result[[3]],k=j),cutree(result[[5]],k=j), similarity = c("jaccard"), method = "independence")
-				sim_avg <- (sim_ave_comp + sim_ave_ward + sim_comp_ward) / 3
-				avg <- avg + sim_avg
+				sim_ave_comp_jac <- cluster_similarity(cutree(result[[1]],k=j),cutree(result[[3]],k=j), similarity = c("jaccard"), method = "independence")
+				sim_ave_ward_jac <- cluster_similarity(cutree(result[[1]],k=j),cutree(result[[5]],k=j), similarity = c("jaccard"), method = "independence")
+				sim_comp_ward_jac <- cluster_similarity(cutree(result[[3]],k=j),cutree(result[[5]],k=j), similarity = c("jaccard"), method = "independence")
+				sim_ave_comp_rand <- cluster_similarity(cutree(result[[1]],k=j),cutree(result[[3]],k=j), similarity = c("rand"), method = "independence")
+				sim_ave_ward_rand <- cluster_similarity(cutree(result[[1]],k=j),cutree(result[[5]],k=j), similarity = c("rand"), method = "independence")
+				sim_comp_ward_rand <- cluster_similarity(cutree(result[[3]],k=j),cutree(result[[5]],k=j), similarity = c("rand"), method = "independence")
+				
+				sim_avg_jac <- (sim_ave_comp_jac + sim_ave_ward_jac + sim_comp_ward_jac) / 3
+				sim_avg_rand <- (sim_ave_comp_rand + sim_ave_ward_rand + sim_comp_ward_rand) / 3
+				avg_jac <- avg_jac + sim_avg_jac
+				sq_jac <- sq_jac + (sim_avg_jac)^2
+				avg_rand <- avg_rand + sim_avg_rand
+				sq_rand <- sq_rand + (sim_avg_rand)^2
+				
+				log[count,1] <- j
+				log[count,2] <- l
+				log[count,3] <- i
+				log[count,4] <- paste(result[7],collapse="")
+				log[count,5] <- sim_ave_comp_jac
+				log[count,6] <- sim_ave_ward_jac
+				log[count,7] <- sim_comp_ward_jac
+				log[count,8] <- sim_avg_jac
+				log[count,9] <- sim_ave_comp_rand
+				log[count,10] <- sim_ave_ward_rand
+				log[count,11] <- sim_comp_ward_rand
+				log[count,12] <- sim_avg_rand
+				
+				count <- count + 1
 			}
-			avg <- avg / trials
-			result_df[l - sample_size_start + 2, j - n_cluster_start + 2] <- avg
+			var_jac <- ((trials * sq_jac) - avg_jac^2) / (trials * (trials - 1))
+			avg_jac <- avg_jac / trials
+			
+			var_rand <- ((trials * sq_rand) - avg_rand^2) / (trials * (trials - 1))
+			avg_rand <- avg_rand / trials
+			
+			result_df_jac[l - sample_size_start + 2, (j - n_cluster_start) * 2 + 2] <- avg_jac
+			result_df_jac[l - sample_size_start + 2, (j - n_cluster_start) * 2 + 3] <- sqrt(var_jac)
+			result_df_rand[l - sample_size_start + 2, (j - n_cluster_start) * 2 + 2] <- avg_rand
+			result_df_rand[l - sample_size_start + 2, (j - n_cluster_start) * 2 + 3] <- sqrt(var_rand)
 		}
 	}
 	
 	# write data frame to file
-	write.table(result_df, file = paste(path, output_name, ".csv", sep = ""), sep = ",", row.names = F,  col.names = F)
+	write.table(result_df_jac, file = paste(path, output_name, "_jac.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
+	write.table(result_df_rand, file = paste(path, output_name, "_rand.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
+	write.table(log, file = paste(path, output_name, "_log.csv", sep = ""), sep = ",", row.names = T,  col.names = T)
 	
-	# produce plot
+	# produce plots
 	cols = c("blue","green","red","brown","yellow")
-	png(filename=paste(path, output_name, ".png",sep=""), height=1600, width=1600, bg="white")
 	
+	pdf(file= paste(path, output_name, "_jac.pdf",sep=""),onefile=T,width=12, height=4)
+	#png(filename=paste(path, output_name, "_jac.png",sep=""), height=1600, width=1600, bg="white")
 	for (i in 1:(n_cluster_end-n_cluster_start+1)) {
 		if (i == 1) {
-			plot(result_df[2:(sample_size_end-sample_size_start+2),i+1], type="o", ylim=c(0,1), col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i) 
+			plot(result_df_jac[2:(sample_size_end-sample_size_start+2),2], type="o", ylim=c(0,1), col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i) 
 			axis(1,at=1:(sample_size_end-sample_size_start+1),labels=c(sample_size_start:sample_size_end))
 		} else {
-			lines(result_df[2:(sample_size_end-sample_size_start+2),i+1], type="o", col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i)
+			lines(result_df_jac[2:(sample_size_end-sample_size_start+2),(i-1)*2+2], type="o", col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i)
+		}
+	}
+	legend(1, 1, c(n_cluster_start:n_cluster_end), cex=0.8, col=cols, pch=21:(21+(n_cluster_end-n_cluster_start)), lty=1:(n_cluster_end-n_cluster_start+1))
+	dev.off()
+	
+	pdf(file= paste(path, output_name, "_rand.pdf",sep=""),onefile=T,width=12, height=4)
+	#png(filename=paste(path, output_name, "_rand.png",sep=""), height=1600, width=1600, bg="white")
+	for (i in 1:(n_cluster_end-n_cluster_start+1)) {
+		if (i == 1) {
+			plot(result_df_rand[2:(sample_size_end-sample_size_start+2),2], type="o", ylim=c(0,1), col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i) 
+			axis(1,at=1:(sample_size_end-sample_size_start+1),labels=c(sample_size_start:sample_size_end))
+		} else {
+			lines(result_df_rand[2:(sample_size_end-sample_size_start+2),(i-1)*2+2], type="o", col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i)
 		}
 	}
 	legend(1, 1, c(n_cluster_start:n_cluster_end), cex=0.8, col=cols, pch=21:(21+(n_cluster_end-n_cluster_start)), lty=1:(n_cluster_end-n_cluster_start+1))
@@ -701,7 +758,6 @@ index_sampling <- function(path, ism_list, output_name, trials, sample_size_star
 
 #Cluster validation
 cluster_validation <- function(path, k, title=""){
-	
 	
 	ism <- list.files(paste(path,"ism/",sep=""))
 	r <- sample(1:100, size=participant_counter(path), replace=TRUE)
