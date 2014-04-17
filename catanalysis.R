@@ -26,7 +26,7 @@ scenario_name <- "2500 geoterms"
 #path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
-path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/1200 mturk birdseye/30participants/all/"
+path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/1200 mturk birdseye/30participants/black/"
 #path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/birdseye/red/"
 #path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/sideview/black/"
 #path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1200 mturk planes birdseye/analysis/birdseye_30/"
@@ -326,12 +326,12 @@ participant_info <- function(path){
 		
 		#Construct the full file name for assignment.csv file
 		participant_groups <- paste("./", participant_number, "/", substring(files[i],1,8), 
-				"gprototypes.csv", sep = "")
+				"assignment.csv", sep = "")
 		
 		groups <- read.delim(participant_groups, header = F, sep = ",", stringsAsFactors = F)
 		
-		# Count the number of rows in the prototype file and convert it to the # of groups created
-		groups <- nrow(groups)
+		# Count the number of rows in the assignment file and convert it to the # of groups created
+		groups <- length(unique(groups[,2]))
 		
 		#Append the # of groups created to the vector "groups_created"
 		groups_created <- append(groups_created, groups)
@@ -1113,4 +1113,3 @@ for(i in 2: max_cluster){
 #cophenetic_sampling(path, list.files(paste(path,"ism/",sep="")),100, 20)
 
 #index_sampling(path, list.files(paste(path,"ism/",sep="")), "index_sampling_results", 25, 5, 23, 2, 7)
-
