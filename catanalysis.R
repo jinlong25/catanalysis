@@ -580,7 +580,7 @@ sampling_run <- function(path, ism_list, sample_size) {
 		
 		#Read in the ISM from a participant and exclude the non-ism info from the .mtrx file
 		matrix_i <- read.delim(paste(ism_path,matrix_i_name,sep=""), header = F, sep = " ", stringsAsFactors = F)
-		matrix_i <- data.matrix(matrix_i[1:icon_counter(path), ])
+		matrix_i <- data.matrix(matrix_i[1:nrow(d), ])
 		
 		osm <- osm + matrix_i
 	}
@@ -962,22 +962,26 @@ participant_similarity <- function(path){
 	dend_jac <- as.dendrogram(cluster_jac)
 	dend_rand <- as.dendrogram(cluster_rand)
 	
+	
 	#Export the dendrogram as a tiff file
-	tiff(filename = paste(path, "participant_similarity.tiff", sep =""),
-			width = 4000, height=4000, units="px",
-			pointsize=5, compression = "none", bg = "white", res = 400)
+	pdf(file= paste(path, "participant_similarity.pdf", sep =""),onefile=T,width=12, height=4)
+	#tiff(filename = paste(path, "participant_similarity.tiff", sep =""),
+	#		width = 4000, height=4000, units="px",
+	#		pointsize=5, compression = "none", bg = "white", res = 400)
 	plot(dend)
 	dev.off()
 	
-	tiff(filename = paste(path, "participant_similarity_jac.tiff", sep =""),
-			width = 4000, height=4000, units="px",
-			pointsize=5, compression = "none", bg = "white", res = 400)
+	pdf(file= paste(path, "participant_similarity_jac.pdf", sep =""),onefile=T,width=12, height=4)
+	#tiff(filename = paste(path, "participant_similarity_jac.tiff", sep =""),
+	#		width = 4000, height=4000, units="px",
+	#		pointsize=5, compression = "none", bg = "white", res = 400)
 	plot(dend_jac)
 	dev.off()
 	
-	tiff(filename = paste(path, "participant_similarity_rand.tiff", sep =""),
-			width = 4000, height=4000, units="px",
-			pointsize=5, compression = "none", bg = "white", res = 400)
+	pdf(file= paste(path, "participant_similarity_rand.pdf", sep =""),onefile=T,width=12, height=4)
+	#tiff(filename = paste(path, "participant_similarity_rand.tiff", sep =""),
+	#		width = 4000, height=4000, units="px",
+	#		pointsize=5, compression = "none", bg = "white", res = 400)
 	plot(dend_rand)
 	dev.off()
 	
