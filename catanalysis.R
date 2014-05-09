@@ -18,7 +18,7 @@ rm(list=ls())
 scenario_name <- "2500 geoterms"
 
 #Define the path to the experiment folder (with a closing "/" or "\")
-path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/1200 mturk birdseye/30participants/black/"
+path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2500 mturk geo terms/"
 
 
 ##Checks if "/" exists after path. If not, one is added
@@ -458,7 +458,7 @@ cluster_heatmap <- function(path){
 	
 	#Drawing the cluster heatmap and export as a png file
 	png(filename = paste(path, "cluster_heatmap.png", sep = ""), width = 2000, height = 2000, units = "px",
-			pointsize = 5, compression = "none", bg = "white", res = 600)
+			pointsize = 5, bg = "white", res = 600)
 	heatmap.2(as.matrix(participant_counter(path) - dm), Rowv = dend, Colv = dend, 
 			margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
 			revC = T, trace = "none", key = T)
@@ -1035,8 +1035,8 @@ participant_similarity_visualizations <- function(path){
 	dev.off()
   
   # Create a cluster heatmap for participant similarities
-	png(filename = paste(path, "cluster_heatmap.png", sep = ""), width = 2000, height = 2000, units = "px",
-	    pointsize = 5, compression = "none", bg = "white", res = 600)
+	png(filename = paste(path, "HP-Clust-PartSim.png", sep = ""), width = 2000, height = 2000, units = "px",
+	    pointsize = 5, bg = "white", res = 600)
 	heatmap.2(as.matrix(dm), Rowv = dend, Colv = "Rowv", 
 	          margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "row", 
 	          revC = TRUE, trace = "none", key = TRUE)
