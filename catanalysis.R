@@ -727,32 +727,44 @@ index_sampling <- function(path, ism_list, output_name, trials, sample_size_star
 	write.table(log, file = paste(path, output_name, "_log.csv", sep = ""), sep = ",", row.names = T,  col.names = T)
 	
 	# produce plots
-	cols = c("blue","green","red","brown","yellow")
+	cols <- c("blue","green","red","brown","yellow")
 	
 	pdf(file= paste(path, output_name, "_jac.pdf",sep=""),onefile=T,width=12, height=4)
 	#png(filename=paste(path, output_name, "_jac.png",sep=""), height=1600, width=1600, bg="white")
 	for (i in 1:(n_cluster_end-n_cluster_start+1)) {
 		if (i == 1) {
-			plot(result_df_jac[2:(sample_size_end-sample_size_start+2),2], type="o", ylim=c(0,1), col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i) 
+			par(mar=c(5.1, 4.1, 4.1,5.1),xpd=TRUE)
+			plot(result_df_jac[2:(sample_size_end-sample_size_start+2),2], type="o", ylim=c(0,1), col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i, axes=FALSE, ann=FALSE, bty='L') 
 			axis(1,at=1:(sample_size_end-sample_size_start+1),labels=c(sample_size_start:sample_size_end))
+			axis(2,at=c(0,0.2,0.4,0.6,0.8,1),labels=c("0.0","0.2","0.4","0.6","0.8","1.0"))
+			box()
+			title(main="CMSI based on Jaccard coefficient", col=rgb(0,0.5,0))
 		} else {
 			lines(result_df_jac[2:(sample_size_end-sample_size_start+2),(i-1)*2+2], type="o", col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i)
 		}
 	}
-	legend(1, 1, c(n_cluster_start:n_cluster_end), cex=0.8, col=cols, pch=21:(21+(n_cluster_end-n_cluster_start)), lty=1:(n_cluster_end-n_cluster_start+1))
+	legend("topright", inset=c(-0.08,0), legend= c(n_cluster_start:n_cluster_end), cex=0.8, col=cols, pch=21:(21+(n_cluster_end-n_cluster_start)), lty=1:(n_cluster_end-n_cluster_start+1))
+	title(xlab="Sample size", col.lab=rgb(0,0.5,0))
+	title(ylab="CMSI", col.lab=rgb(0,0.5,0))
 	dev.off()
 	
 	pdf(file= paste(path, output_name, "_rand.pdf",sep=""),onefile=T,width=12, height=4)
 	#png(filename=paste(path, output_name, "_rand.png",sep=""), height=1600, width=1600, bg="white")
 	for (i in 1:(n_cluster_end-n_cluster_start+1)) {
 		if (i == 1) {
-			plot(result_df_rand[2:(sample_size_end-sample_size_start+2),2], type="o", ylim=c(0,1), col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i) 
+			par(mar=c(5.1, 4.1, 4.1,5.1),xpd=TRUE)
+			plot(result_df_rand[2:(sample_size_end-sample_size_start+2),2], type="o", ylim=c(0,1), col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i,axes=FALSE, ann=FALSE) 
 			axis(1,at=1:(sample_size_end-sample_size_start+1),labels=c(sample_size_start:sample_size_end))
+			axis(2,at=c(0,0.2,0.4,0.6,0.8,1),labels=c("0.0","0.2","0.4","0.6","0.8","1.0"))
+			box()
+			title(main="CMSI based on Rand coefficient", col=rgb(0,0.5,0))
 		} else {
 			lines(result_df_rand[2:(sample_size_end-sample_size_start+2),(i-1)*2+2], type="o", col=cols[ ((i-1) %% length(cols)) + 1 ], pch=21+i-1, lty=i)
 		}
 	}
-	legend(1, 1, c(n_cluster_start:n_cluster_end), cex=0.8, col=cols, pch=21:(21+(n_cluster_end-n_cluster_start)), lty=1:(n_cluster_end-n_cluster_start+1))
+	legend("topright", inset=c(-0.08,0), legend= c(n_cluster_start:n_cluster_end), cex=0.8, col=cols, pch=21:(21+(n_cluster_end-n_cluster_start)), lty=1:(n_cluster_end-n_cluster_start+1))
+	title(xlab="Sample size", col.lab=rgb(0,0.5,0))
+	title(ylab="CMSI", col.lab=rgb(0,0.5,0))
 	dev.off()
 }
 
