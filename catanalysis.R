@@ -957,6 +957,28 @@ participant_similarity <- function(path){
 	colnames(dm_rand) <- names
 	rownames(dm_rand) <- names
 	
+	write.table(dm,file = paste(path, "participant_similarity_hamming.csv",sep = ""), sep = " ",
+			row.names = T, col.names = T)
+	
+	write.table(dm_jac,file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
+			row.names = T, col.names = T)
+	
+	write.table(dm_rand,file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
+			row.names = T, col.names = T)
+	
+}
+	
+##Participant similarity analysis
+participant_similarity_clusters <- function(path){
+	dm <- as.matrix(read.table(file = paste(path, "participant_similarity_hamming.csv",sep = ""), sep = " ",
+			header = T))
+	
+	dm_jac <- as.matrix(read.table(file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
+			header = T))
+	
+	dm_rand <- as.matrix(read.table(file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
+			header = T))
+	
 	#Perform cluster analysis based on participant similarity matrix using Ward's method and construct a dendrogram
 	cluster <- hclust(method = "ward", as.dist(dm))
 	cluster_jac <- hclust(method = "ward", as.dist(dm_jac))
@@ -965,6 +987,30 @@ participant_similarity <- function(path){
 	dend_jac <- as.dendrogram(cluster_jac)
 	dend_rand <- as.dendrogram(cluster_rand)
 	
+	#Create overview table showing cluster membership for all possible numbers of clusters
+	tree = cutree(cluster, k = c(1:nrow(dm)))
+	write.csv(tree, file=paste(path, "participant_similarity_ward_clusters", ".csv", sep = ""))
+}
+
+##Participant similarity analysis
+participant_similarity_visualizations <- function(path){
+	
+	dm <- as.matrix(read.table(file = paste(path, "participant_similarity_hamming.csv",sep = ""), sep = " ",
+					header = T))
+	
+	dm_jac <- as.matrix(read.table(file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
+					header = T))
+	
+	dm_rand <- as.matrix(read.table(file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
+					header = T))
+	
+	#Perform cluster analysis based on participant similarity matrix using Ward's method and construct a dendrogram
+	cluster <- hclust(method = "ward", as.dist(dm))
+	cluster_jac <- hclust(method = "ward", as.dist(dm_jac))
+	cluster_rand <- hclust(method = "ward", as.dist(dm_rand))
+	dend <- as.dendrogram(cluster)
+	dend_jac <- as.dendrogram(cluster_jac)
+	dend_rand <- as.dendrogram(cluster_rand)
 	
 	#Export the dendrogram as a pdf file
 	pdf(file= paste(path, "participant_similarity.pdf", sep =""),onefile=T,width=12, height=4)
@@ -994,11 +1040,6 @@ participant_similarity <- function(path){
 	heatmap.2(as.matrix(dm), Rowv = dend, Colv = "Rowv", 
 	          margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "row", 
 	          revC = TRUE, trace = "none", key = TRUE)
-  
-	
-	#Create overview table showing cluster membership for all possible numbers of clusters
-	tree = cutree(cluster, k = c(1:length(isms)))
-	write.csv(tree, file=paste(path, "participant_similarity_ward_clusters", ".csv", sep = ""))
 }
 
 
