@@ -18,18 +18,8 @@ rm(list=ls())
 scenario_name <- "2500 geoterms"
 
 #Define the path to the experiment folder (with a closing "/" or "\")
-#path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
-#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2101 mturk landscape ss1/"
-#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2100 mturk landscape test/"
-#path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/red/"
-#path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/green/"
-#path <- "/Users/jinlong/Dropbox/ACM_SIGSPATIAL2013/analysis_jinlong/sideview/all/"
-#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1202 mturk directions 3D fgr/"
-#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/2200 mturk landscape dmark 1/"
 path <- "/Users/jow/Dropbox/Catscan experiments/Experiments/1200 mturk birdseye/30participants/black/"
-#path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/birdseye/red/"
-#path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/sideview/black/"
-#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1200 mturk planes birdseye/analysis/birdseye_30/"
+
 
 ##Checks if "/" exists after path. If not, one is added
 if(substr(path, nchar(path), nchar(path)) != "/"){
@@ -39,7 +29,8 @@ if(substr(path, nchar(path), nchar(path)) != "/"){
 #Define the max number of clusters
 max_cluster <- 9
 
-#Auto-create two subfolders "ism" and "matrices"
+# Auto-create two subfolders "ism" and "matrices"
+# Should be a function
 dir.create(paste(path, "ism/", sep=""))
 klipart_path <- paste(path, scenario_name, "-klipart/", sep = "")
 dir.create(klipart_path)
@@ -446,10 +437,10 @@ osm_viz <- function(path){
 	#Jinlong: other options includes jpg, bmp, png, etc. but each has its own function with
 	#slightly different arguments and different default values for arguments
 	#Drawing the heatmap and export as a tiff file
-	tiff(filename = paste(path, "heat_map.tiff", sep = ""),width = 2000, height = 2000, units = "px",
+	png(filename = paste(path, "heat_map.png", sep = ""),width = 2000, height = 2000, units = "px",
 			pointsize = 5,compression = "none", bg = "white", res = 600)
 	heatmap.2(as.matrix(participant_counter(path) - dm), Rowv = F, Colv = "Rowv", dendrogram = "none", 
-			margin = c(3, 3), cexRow = 0.6, cexCol = 0.6, revC = F, trace = "none", key = F)
+			margin = c(3, 3), cexRow = 0.5, cexCol = 0.5, revC = F, trace = "none", key = F)
 	dev.off()
 }
 
@@ -465,11 +456,11 @@ cluster_heatmap <- function(path){
 	cluster = hclust(method = "ward", as.dist(participant_counter(path) - dm))
 	dend = as.dendrogram(cluster)
 	
-	#Drawing the cluster heatmap and export as a tiff file
-	tiff(filename = paste(path, "cluster_heatmap.tiff", sep = ""), width = 2000, height = 2000, units = "px",
+	#Drawing the cluster heatmap and export as a png file
+	png(filename = paste(path, "cluster_heatmap.png", sep = ""), width = 2000, height = 2000, units = "px",
 			pointsize = 5, compression = "none", bg = "white", res = 600)
 	heatmap.2(as.matrix(participant_counter(path) - dm), Rowv = dend, Colv = dend, 
-			margin = c(3,3), cexRow = 0.6, cexCol = 0.6, dendrogram = "both", 
+			margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
 			revC = T, trace = "none", key = T)
 	dev.off()
 }
@@ -503,19 +494,19 @@ general_cluster_analysis  <- function(path) {
 	dend_comp <- as.dendrogram(comp)
 	dend_ward <- as.dendrogram(ward)
 	
-	tiff(filename = paste(path, "dendrogram_ave.tiff", sep =""),
+	png(filename = paste(path, "dendrogram_ave.png", sep =""),
 			width = 2000, height=2000, units="px",
 			pointsize=5, compression = "none", bg = "white", res = 600)
 	plot(dend_ave)
 	dev.off()
 	
-	tiff(filename = paste(path, "dendrogram_comp.tiff", sep =""),
+	png(filename = paste(path, "dendrogram_comp.png", sep =""),
 			width = 2000, height=2000, units="px",
 			pointsize=5, compression = "none", bg = "white", res = 600)
 	plot(dend_comp)
 	dev.off()
 	
-	tiff(filename = paste(path, "dendrogram_ward.tiff", sep =""),
+	png(filename = paste(path, "dendrogram_ward.png", sep =""),
 			width = 2000, height=2000, units="px",
 			pointsize=5, compression = "none", bg = "white", res = 600)
 	plot(dend_ward)
@@ -886,7 +877,7 @@ overview_getter <- function(path){
 			main = "Groups Created")
 	boxplot(data[,15],
 			horizontal=TRUE, 
-			notch = TRUE,  # Notches for CI for median
+			#notch = TRUE,  # Notches for CI for median
 			col = "slategray3",
 			boxwex = 0.5,  # Width of box as proportion of original
 			whisklty = 1,  # Whisker line type; 1 = solid line
@@ -975,7 +966,7 @@ participant_similarity <- function(path){
 	dend_rand <- as.dendrogram(cluster_rand)
 	
 	
-	#Export the dendrogram as a tiff file
+	#Export the dendrogram as a pdf file
 	pdf(file= paste(path, "participant_similarity.pdf", sep =""),onefile=T,width=12, height=4)
 	#tiff(filename = paste(path, "participant_similarity.tiff", sep =""),
 	#		width = 4000, height=4000, units="px",
@@ -996,6 +987,14 @@ participant_similarity <- function(path){
 	#		pointsize=5, compression = "none", bg = "white", res = 400)
 	plot(dend_rand)
 	dev.off()
+  
+  # Create a cluster heatmap for participant similarities
+	png(filename = paste(path, "cluster_heatmap.png", sep = ""), width = 2000, height = 2000, units = "px",
+	    pointsize = 5, compression = "none", bg = "white", res = 600)
+	heatmap.2(as.matrix(dm), Rowv = dend, Colv = "Rowv", 
+	          margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "row", 
+	          revC = TRUE, trace = "none", key = TRUE)
+  
 	
 	#Create overview table showing cluster membership for all possible numbers of clusters
 	tree = cutree(cluster, k = c(1:length(isms)))
