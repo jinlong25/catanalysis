@@ -1034,12 +1034,27 @@ participant_similarity_visualizations <- function(path){
 	plot(dend_rand)
 	dev.off()
   
+	# Generate the dendrogram using wards method for
+  # Participant similarity using Hamming distance
+	dend = as.dendrogram(cluster)
   # Create a cluster heatmap for participant similarities
-	png(filename = paste(path, "HP-Clust-PartSim.png", sep = ""), width = 2000, height = 2000, units = "px",
+	png(filename = paste(path, "HM-Clust-PartSimHam.png", sep = ""), width = 2000, height = 2000, units = "px",
 	    pointsize = 5, bg = "white", res = 600)
-	heatmap.2(as.matrix(dm), Rowv = dend, Colv = "Rowv", 
-	          margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "row", 
+	heatmap.2(as.matrix(dm), col=cm.colors(255), Rowv = dend, Colv = dend, 
+	          margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
 	          revC = TRUE, trace = "none", key = TRUE)
+	dev.off()
+  
+	# Generate the dendrogram using wards method for
+	# Participant similarity using Jaccard coefficient
+	dend = as.dendrogram(cluster_jac)
+	# Create a cluster heatmap for participant similarities
+	png(filename = paste(path, "HM-Clust-PartSimJac.png", sep = ""), width = 2000, height = 2000, units = "px",
+	    pointsize = 5, bg = "white", res = 600)
+	heatmap.2(as.matrix(dm_jac), Rowv = dend, Colv = dend, 
+	          margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
+	          revC = TRUE, trace = "none", key = TRUE)
+	dev.off()
 }
 
 

@@ -1,0 +1,116 @@
+participant number: 25000000
+age: 32
+gender: female
+geo spatial:false
+geography:false
+color blind:false
+screen size: java.awt.Dimension[width=1366,height=768]
+frame size: java.awt.Dimension[width=1366,height=768]
+subject: Healthcare Administratioin
+
+language: english
+
+country: US
+
+seperation between areas
+
+I used similarities between each thing to sort such as mountian range and vally being boarders between to areas. 
+
+
+
+/events/mountain range.pngnr: 30
+/events/canyon.pngnr: 7
+/events/elevation.pngnr: 17
+/events/border.pngnr: 4
+/events/boundary.pngnr: 5
+/events/beach.pngnr: 2
+
+parts of a state
+
+I used words that make up a state such as country, road, town etc...
+
+
+
+/events/country.pngnr: 12
+/events/road.pngnr: 38
+/events/town.pngnr: 45
+/events/street.pngnr: 43
+/events/county.pngnr: 13
+/events/highway.pngnr: 22
+/events/city.pngnr: 9
+/events/capitals.pngnr: 8
+/events/building.pngnr: 6
+/events/house.pngnr: 24
+/events/state.pngnr: 41
+
+large land areas
+
+in this group i catagorized things that are large areas of land
+
+
+
+/events/peninsula.pngnr: 33
+/events/continent.pngnr: 11
+/events/plateau.pngnr: 35
+/events/island.pngnr: 25
+/events/desert.pngnr: 15
+/events/land.pngnr: 27
+/events/plain.pngnr: 34
+
+all water
+
+in this group all items sorted where either bodies of water or associated as such. 
+
+
+
+/events/lake.pngnr: 26
+/events/water.pngnr: 49
+/events/stream.pngnr: 42
+/events/waterfall.pngnr: 50
+/events/sea.pngnr: 40
+/events/pond.pngnr: 36
+/events/glacier.pngnr: 19
+/events/body of water.pngnr: 3
+/events/ocean.pngnr: 32
+/events/river.pngnr: 37
+
+natural disasters
+
+i sorted words into this group that are associated with disasters or distruction. 
+
+
+
+/events/earthquake.pngnr: 16
+/events/volcano.pngnr: 48
+/events/weather.pngnr: 51
+
+types of land
+
+these words all describe types of environments
+
+
+
+/events/forest.pngnr: 18
+/events/hill.pngnr: 23
+/events/valley.pngnr: 47
+/events/delta.pngnr: 14
+/events/mountain.pngnr: 31
+/events/grass.pngnr: 21
+/events/rock.pngnr: 39
+/events/tree.pngnr: 46
+
+tools
+
+this group all contians words that reference tools used to access different aspects of the world
+
+
+
+/events/map.pngnr: 29
+/events/topography.pngnr: 44
+/events/archipelago.pngnr: 0
+/events/atlas.pngnr: 1
+/events/world.pngnr: 52
+/events/compass.pngnr: 10
+/events/globe.pngnr: 20
+/events/longitude.pngnr: 28
+
