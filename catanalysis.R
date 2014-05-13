@@ -433,7 +433,7 @@ osm_viz <- function(path){
 	dm = as.matrix(d[, -1])
 	dimnames(dm) = list(d[, 1],d[, 1])
 	
-	#The export of the heatmap is realized as a tiff file. Other options are ....??
+	#The export of the heatmap is realized as a pngfile. Other options are ....??
 	#Jinlong: other options includes jpg, bmp, png, etc. but each has its own function with
 	#slightly different arguments and different default values for arguments
 	#Drawing the heatmap and export as a tiff file
@@ -1034,10 +1034,7 @@ participant_similarity_visualizations <- function(path){
 	plot(dend_rand)
 	dev.off()
   
-	# Generate the dendrogram using wards method for
-  # Participant similarity using Hamming distance
-	dend = as.dendrogram(cluster)
-  # Create a cluster heatmap for participant similarities
+	# Create a cluster heatmap for participant similarities
 	png(filename = paste(path, "HM-Clust-PartSimHam.png", sep = ""), width = 2000, height = 2000, units = "px",
 	    pointsize = 5, bg = "white", res = 600)
 	heatmap.2(as.matrix(dm), col=cm.colors(255), Rowv = dend, Colv = dend, 
