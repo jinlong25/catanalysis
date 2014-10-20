@@ -40,41 +40,42 @@ numClusVal <- function(path, k){
 
 ###################################################################
 # print standard dendrograms
+# Author: Alexander Klippel
 # input variable: path
 # OSM needs to be present
-# Author: Alexander Klippel
 stanDen <- function(path)
   {
   d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
   dm <- as.matrix(d[, -1])
   dimnames(dm) <- list(d[, 1],d[, 1])
-  clu.meth = c("ave", "comp", "ward")
+  clu.meth = c("ave", "comp", "ward.D")
   for (i in clu.meth)
     {
     ##ALTERNATIVE 1
-    #  dummy = hclust(method = i, as.dist(participant_counter(path) - dm))
-    #  png(file = paste(path, "dendro", i, ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
-    #  plot(dummy)
+      dummy = hclust(method = i, as.dist(participant_counter(path) - dm))
+      png(file = paste(path, "dendro", i, ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
+      plot(dummy)
     ##ALTERNATIVE 2
-    dummy = as.dendrogram(hclust(method = i, as.dist(participant_counter(path) - dm)))
-    png(file = paste(path, "dendro", i, ".png", sep=""), width = 1200, height = 1200)
-    plot(dummy, type = "triangle", nodePar = list(pch = 2:1, cex = .5*2:1, col = 2:3),
-         #edgePar = list(col = 1:2, lty = 2:3), 
-         horiz = TRUE, 
-         #center = FALSE, dLeaf = -2, edge.root = FALSE
-    )
+#     dummy = as.dendrogram(hclust(method = i, as.dist(participant_counter(path) - dm)))
+#     png(file = paste(path, "dendro", i, ".png", sep=""), width = 1400, height = 1200)
+#     plot(dummy, type = "triangle", nodePar = list(pch = 10:1, cex = .5*4:1, col = 2:3),
+#          edgePar = list(col = 1:2, lty = 2:3), 
+#          horiz = TRUE, 
+#          #center = FALSE, dLeaf = -2, edge.root = FALSE
+#     )
     myTitle = paste(scenario_name, i, sep="//")
     title(main = myTitle)
     dev.off()
     }
   }
-
+stanDen(path)
 
 ################################################33
 # ploting individual "heatmaps" as black/white images
-# results are stored in folder 'indISM'
-# input: path
 # Author: Alexander Klippel
+# input: path
+# output: results for each participant are stored in folder 'indISM'
+# required package:
 visIndISM <- function(path)
   {
   #read in all ISMs and store as a list
@@ -92,6 +93,7 @@ visIndISM <- function(path)
     dev.off()
     }
   }
+visIndISM(path)
 
 #### Not finished
 ## ploting reordered individual "heatmaps"
@@ -118,9 +120,9 @@ for (i in indISM) {
 #############################################################################################
 
 # Visualizing participant similarities by groups
-# Provide path and where to cut the dendrogram
-# TODO: np needs to be set!
 # Author: Alexander Klippel
+# Input: path, number of participants (np), number of clusters (k)
+# TODO: np needs to be set manually at the moment!
 part.sim.group.vis <- function(path, np, k){
   #List all ISMs
   isms <- list.files(paste(path, "ism/", sep = ""))
@@ -179,18 +181,19 @@ part.sim.group.vis <- function(path, np, k){
 
 ##################################################################################################
 
-# Comparing results from 2 experiments
-# Comparing two osm
-# Calculating difference between them
+# Comparing results from 2 experiments / 2 OSMs
+# Here: Substracting two OSMs from one another and visualizing the difference
 # Author: Alexander Klippel
 dif2Osm <- function(path1,path2)
   {
   # load first OSM
   d1 <- read.csv(paste(path1, "osm.csv", sep = ""), header = F)
   dm1 <- as.matrix(d1[, -1])
+  
   # load second OSM
   d2 <- read.csv(paste(path2, "osm.csv", sep = ""), header = F)
   dm2 <- as.matrix(d2[, -1])
+  
   # substract the two OSMs
   dm.diff <- dm1 - dm2
   dimnames(dm.diff) <- list(d1[, 1],d1[, 1])
