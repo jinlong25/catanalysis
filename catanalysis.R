@@ -362,7 +362,9 @@ participant_info <- function(path){
 	write.table(demographic, file = paste(klipart_path, "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
 }
 
-#description_getter: extract the linguistic labels (both long and short) from all participants and store in a single csv file
+
+#description_getter: extract the linguistic labels (both long and short) from all participants and store in a single csv file, returns 
+#results as a table 
 description_getter <- function(path){
 	
 	#Construct the path for the zip folder and list all the zip files
@@ -418,6 +420,8 @@ description_getter <- function(path){
 	
 	#Export batch.csv for Klipart
 	write.table(description, file=paste(klipart_path, "batch.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
+	
+	return(description)
 }
 
 
@@ -909,7 +913,7 @@ overview_getter <- function(path){
 
 ##Participant similarity analysis
 participant_similarity <- function(path){
-
+	
 	#List all ISMs
 	isms <- list.files(paste(path, "ism/", sep = ""))
 	all_isms <- list()
@@ -967,22 +971,22 @@ participant_similarity <- function(path){
 			row.names = T, col.names = T)
 	
 }
-	
+
 ##Participant similarity analysis
 participant_similarity_clusters <- function(path){
 	dm <- as.matrix(read.table(file = paste(path, "participant_similarity_hamming.csv",sep = ""), sep = " ",
-			header = T))
+					header = T))
 	
 	dm_jac <- as.matrix(read.table(file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
-			header = T))
+					header = T))
 	
 	dm_rand <- as.matrix(read.table(file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
-			header = T))
+					header = T))
 	
 	#Perform cluster analysis based on participant similarity matrix using Ward's method and construct a dendrogram
 	cluster <- hclust(method = "ward", as.dist(dm))
-	cluster_jac <- hclust(method = "ward", as.dist(dm_jac))
-	cluster_rand <- hclust(method = "ward", as.dist(dm_rand))
+	cluster_jac <- hclust(method = "ward", as.dist(1-dm_jac))
+	cluster_rand <- hclust(method = "ward", as.dist(1-dm_rand))
 	dend <- as.dendrogram(cluster)
 	dend_jac <- as.dendrogram(cluster_jac)
 	dend_rand <- as.dendrogram(cluster_rand)
@@ -1006,8 +1010,8 @@ participant_similarity_visualizations <- function(path){
 	
 	#Perform cluster analysis based on participant similarity matrix using Ward's method and construct a dendrogram
 	cluster <- hclust(method = "ward", as.dist(dm))
-	cluster_jac <- hclust(method = "ward", as.dist(dm_jac))
-	cluster_rand <- hclust(method = "ward", as.dist(dm_rand))
+	cluster_jac <- hclust(method = "ward", as.dist(1-dm_jac))
+	cluster_rand <- hclust(method = "ward", as.dist(1-dm_rand))
 	dend <- as.dendrogram(cluster)
 	dend_jac <- as.dendrogram(cluster_jac)
 	dend_rand <- as.dendrogram(cluster_rand)
@@ -1033,26 +1037,27 @@ participant_similarity_visualizations <- function(path){
 	#		pointsize=5, compression = "none", bg = "white", res = 400)
 	plot(dend_rand)
 	dev.off()
-  
+	
 	# Create a cluster heatmap for participant similarities
 	png(filename = paste(path, "HM-Clust-PartSimHam.png", sep = ""), width = 2000, height = 2000, units = "px",
-	    pointsize = 5, bg = "white", res = 600)
+			pointsize = 5, bg = "white", res = 600)
 	heatmap.2(as.matrix(dm), col=cm.colors(255), Rowv = dend, Colv = dend, 
-	          margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
-	          revC = TRUE, trace = "none", key = TRUE)
+			margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
+			revC = TRUE, trace = "none", key = TRUE)
 	dev.off()
-  
+	
 	# Generate the dendrogram using wards method for
 	# Participant similarity using Jaccard coefficient
 	dend = as.dendrogram(cluster_jac)
 	# Create a cluster heatmap for participant similarities
 	png(filename = paste(path, "HM-Clust-PartSimJac.png", sep = ""), width = 2000, height = 2000, units = "px",
-	    pointsize = 5, bg = "white", res = 600)
+			pointsize = 5, bg = "white", res = 600)
 	heatmap.2(as.matrix(dm_jac), Rowv = dend, Colv = dend, 
-	          margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
-	          revC = TRUE, trace = "none", key = TRUE)
+			margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
+			revC = TRUE, trace = "none", key = TRUE)
 	dev.off()
 }
+
 
 
 #Visualize the frequency that each icon is being selected as group prototype
