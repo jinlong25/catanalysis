@@ -2,6 +2,7 @@
 #Cluster membership is derived from cluster analysis
 #Input: k - the number of clusters (that is, where to cut the tree)
 
+#test
 #Clear the workspace
 rm(list=ls())
 
